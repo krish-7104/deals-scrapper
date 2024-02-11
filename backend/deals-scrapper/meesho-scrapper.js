@@ -17,7 +17,9 @@ const getDealsData = async (url) => {
             title: product.find(".sc-eDvSVe.gQDOBc.NewProductCardstyled__StyledDesktopProductTitle-sc-6y2tys-5.ejhQZU.NewProductCardstyled__StyledDesktopProductTitle-sc-6y2tys-5.ejhQZU").text().trim(),
             image: product.find("img").attr("src"),
             discount: product.find(".sc-eDvSVe.cBaVUX.NewProductCardstyled__StyledDesktopSubtitle-sc-6y2tys-6.jBXJyw.NewProductCardstyled__StyledDesktopSubtitle-sc-6y2tys-6.jBXJyw").text(),
-            link: "https://www.meesho.com/" + product.find("a").attr("href")
+            link: "https://www.meesho.com/" + product.find("a").attr("href"),
+            discount_price: product.find(".sc-eDvSVe.dwCrSh").first().text(),
+            original_price: product.find(".sc-eDvSVe.drXXNP.sc-jSUZER.eSuFsQ.sc-jSUZER.eSuFsQ").first().text(),
         };
     }));
     await browser.close();
