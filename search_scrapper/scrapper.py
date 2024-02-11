@@ -19,10 +19,11 @@ def scrape_amazon():
     URL = f"https://www.amazon.in/s?k={search_query}"
     webpage = requests.get(URL, headers=HEADERS)
     soup = BeautifulSoup(webpage.content, "html.parser")
-    mainProduct = soup.find(
-        "span", class_="rush-component s-latency-cf-section")
-    products = mainProduct.find_all(
+
+    products = soup.find_all(
         "div", class_="puis-card-container s-card-container s-overflow-hidden aok-relative puis-include-content-margin puis puis-v2ef34xpz4g7e42bsw0vrg0v0gx s-latency-cf-section puis-card-border")
+    
+    print(len(products))
 
     data = []
     titles = []
