@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { getDealsData, particularDealProducts } = require("../scrapper/amazon-scrapper.js")
+const { getDealsData, particularDealProducts } = require("../deals-scrapper/amazon-scrapper.js")
 const client = require("../redis/client.js")
 // comment this ^ to remove redis
 

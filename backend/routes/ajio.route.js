@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { getAllCouponOffers, getAllDeals } = require("../scrapper/ajio-scrapper.js")
+const { getAllCouponOffers, getAllDeals } = require("../deals-scrapper/ajio-scrapper.js")
 const client = require("../redis/client.js")
 const couponOfferLink = "https://www.ajio.com/offers"
 const dealsLink = "https://www.ajio.com/s/offer-deals-03022021?query=%3Adiscount-desc&curated=true&curatedid=offer-deals-03022021&gridColumns=3"

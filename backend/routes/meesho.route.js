@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { getDealsData } = require("../scrapper/meesho-scrapper.js")
+const { getDealsData } = require("../deals-scrapper/meesho-scrapper.js")
 const client = require("../redis/client.js")
 
 const url = "https://www.meesho.com/?Sort[sort_by]=discount&Sort[sort_order]=desc"
