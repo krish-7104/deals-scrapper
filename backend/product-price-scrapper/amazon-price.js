@@ -8,22 +8,21 @@ const amazonPriceScrape = async (url) => {
     const $ = cheerio.load(data);
     const item = $("div#dp-container");
     product.name = $(item).find("h1 span#productTitle").text().trim();
-    product.discount = $(item)
+    product.discount = parseInt($(item)
         .find("span.a-size-large.a-color-price.savingPriceOverride.aok-align-center.reinventPriceSavingsPercentageMargin.savingsPercentage")
         .first()
-        .text()
-    product.discount_price = $(item)
+        .text().replace(/[^\d.]/g, ''))
+    product.discount_price = parseInt($(item)
         .find(".a-price-whole")
         .first()
-        .text().replace(".", "")
-    product.real_price = $(item)
+        .text().replace(".", "").replace(/[^\d.]/g, ''))
+    product.real_price = parseInt($(item)
         .find(".a-size-small.aok-offscreen")
         .first()
-        .text().trim().replace("M.R.P.: ", "")
+        .text().trim().replace("M.R.P.: ").replace(/[^\d.]/g, ''))
     product.image = $(item)
         .find("img#landingImage")
         .attr("src")
-    console.log(product)
     return product
 }
 

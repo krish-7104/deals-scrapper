@@ -37,11 +37,11 @@ const getAllDeals = async (url) => {
         const product = $(element);
         return {
             title: product.find(".nameCls").first().text(),
-            discount_price: product.find(".price  ").first().text(),
-            original_price: product.find(".orginal-price").first().text(),
+            discount_price: parseInt(product.find(".price  ").first().text().replace(/[^\d.]/g, '')),
+            original_price: parseInt(product.find(".orginal-price").first().text().replace(/[^\d.]/g, '')),
             link: "https://www.ajio.com" + product.find(".rilrtl-products-list__link.desktop").first().attr("href"),
             image: product.find(".rilrtl-lazy-img.rilrtl-lazy-img-loaded").first().attr("src"),
-            discount: product.find(".discount").first().text().trim(),
+            discount: parseInt(product.find(".discount").first().text().trim().replace(/[^\d.]/g, '')),
         };
     }));
     await browser.close();

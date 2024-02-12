@@ -6,7 +6,7 @@ const getSearchProductHandler = require("../search-scrapper/amazon-search.js")
 
 const url = "https://www.amazon.in/deals"
 
-router.get("/deals", async (req, res) => {
+router.get("/deals-category", async (req, res) => {
     try {
         client.get("deals:amazon", async (err, cachedData) => {
             if (err) throw err;
@@ -24,16 +24,17 @@ router.get("/deals", async (req, res) => {
     }
 })
 
-router.get(`/deals/:id`, async (req, res) => {
+router.post(`/deals`, async (req, res) => {
     try {
-        const { id } = req.params
-        client.get(`${id}:amazon`, async (err, cachedData) => {
+        const { url } = req.body
+        const redisVariable = url.replace("https://www.amazon.in/", "")?.replace("?showVariations=true", "").split("&")[0]
+        client.get(`${redisVariable}:amazon`, async (err, cachedData) => {
             if (err) throw err;
             if (cachedData) {
                 res.status(200).json(JSON.parse(cachedData))
             } else {
-                const particularData = await particularDealProducts(id)
-                client.setex(`${id}:amazon`, 3600, JSON.stringify(particularData))
+                const particularData = await particularDealProducts(url)
+                client.setex(`${redisVariable}:amazon`, 3600, JSON.stringify(particularData))
                 res.status(200).json(particularData)
             }
         })
