@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const DealSection = ({ title, data }) => {
+const AmazonDeals = ({ title, data }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -58,4 +58,4 @@ const DealSection = ({ title, data }) => {
   );
 };
 
-export default DealSection;
+export default AmazonDeals;
