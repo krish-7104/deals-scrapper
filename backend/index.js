@@ -1,5 +1,9 @@
 const express = require("express")
 const cors = require("cors")
+const morgan = require("morgan")
+const dotenv = require("dotenv")
+dotenv.config()
+
 const amazonRoutes = require("./routes/amazon.route.js")
 const flipkartRoutes = require("./routes/flipkart.route.js")
 const meeshoRoutes = require("./routes/meesho.route.js")
@@ -11,6 +15,10 @@ app.use(express.json())
 app.use(cors({
     origin: "*"
 }))
+
+if (process.env.NODE_ENV === 'DEVELOPMENT') {
+    app.use(morgan(':method :url :status :response-time ms'));
+}
 
 app.use("/amazon", amazonRoutes)
 app.use("/flipkart", flipkartRoutes)
