@@ -3,8 +3,8 @@ const router = express.Router()
 const { getDealsData, particularDealProducts } = require("../deals-scrapper/amazon-scrapper.js")
 const client = require("../redis/client.js")
 const getSearchProductHandler = require("../search-scrapper/amazon-search.js")
-
 const url = "https://www.amazon.in/deals"
+const { REDIS_CACHE_TIME } = require("../utils/constants.js")
 
 router.get("/deals-category", async (req, res) => {
     try {
@@ -14,7 +14,7 @@ router.get("/deals-category", async (req, res) => {
                 res.status(200).json(JSON.parse(cachedData))
             } else {
                 const dealsData = await getDealsData(url);
-                client.setex("deals:amazon", 3600, JSON.stringify(dealsData))
+                client.setex("deals:amazon", REDIS_CACHE_TIME, JSON.stringify(dealsData))
                 res.status(200).json(dealsData)
             }
         });
@@ -34,7 +34,7 @@ router.post(`/deals`, async (req, res) => {
                 res.status(200).json(JSON.parse(cachedData))
             } else {
                 const particularData = await particularDealProducts(url)
-                client.setex(`${redisVariable}:amazon`, 3600, JSON.stringify(particularData))
+                client.setex(`${redisVariable}:amazon`, REDIS_CACHE_TIME, JSON.stringify(particularData))
                 res.status(200).json(particularData)
             }
         })

@@ -4,6 +4,7 @@ const { getAllCouponOffers, getAllDeals } = require("../deals-scrapper/ajio-scra
 const client = require("../redis/client.js")
 const couponOfferLink = "https://www.ajio.com/offers"
 const dealsLink = "https://www.ajio.com/s/offer-deals-03022021?query=%3Adiscount-desc&curated=true&curatedid=offer-deals-03022021&gridColumns=3"
+const { REDIS_CACHE_TIME } = require("../utils/constants.js")
 
 router.get("/coupons", async (req, res) => {
     try {
@@ -13,7 +14,7 @@ router.get("/coupons", async (req, res) => {
                 res.status(200).json(JSON.parse(cachedData))
             } else {
                 const dealsData = await getAllCouponOffers(couponOfferLink);
-                client.setex("coupons:ajio", 3600, JSON.stringify(dealsData))
+                client.setex("coupons:ajio", REDIS_CACHE_TIME, JSON.stringify(dealsData))
                 res.status(200).json(dealsData)
             }
         });
@@ -31,7 +32,7 @@ router.get("/deals", async (req, res) => {
                 res.status(200).json(JSON.parse(cachedData))
             } else {
                 const dealsData = await getAllDeals(dealsLink);
-                client.setex("deals:ajio", 3600, JSON.stringify(dealsData))
+                client.setex("deals:ajio", REDIS_CACHE_TIME, JSON.stringify(dealsData))
                 res.status(200).json(dealsData)
             }
         });
