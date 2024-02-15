@@ -15,8 +15,8 @@ const getAmazonCategoryScrapper = async () => {
     for (let index = 0; index < lastPageNumber; index++) {
         const htmlContent = await page.content();
         const $ = cheerio.load(htmlContent);
-        const deals = $(".DealGridItem-module__dealItemDisplayGrid_e7RQVFWSOrwXBX4i24Tqg.DealGridItem-module__withBorders_2jNNLI6U1oDls7Ten3Dttl.DealGridItem-module__withoutActionButton_2OI8DAanWNRCagYDL2iIqN");
-        const currentPageData = await Promise.all(deals.map(async (index, element) => {
+        const categories = $(".DealGridItem-module__dealItemDisplayGrid_e7RQVFWSOrwXBX4i24Tqg.DealGridItem-module__withBorders_2jNNLI6U1oDls7Ten3Dttl.DealGridItem-module__withoutActionButton_2OI8DAanWNRCagYDL2iIqN");
+        const currentPageData = await Promise.all(categories.map(async (index, element) => {
             const product = $(element);
             return {
                 title: product.find(".DealContent-module__truncate_sWbxETx42ZPStTc9jwySW").text().trim(),
@@ -33,7 +33,7 @@ const getAmazonCategoryScrapper = async () => {
             await page.waitForNavigation()
         }
     }
-    fs.writeFileSync("amazon-category.json", JSON.stringify(allData, null, 2));
+    fs.writeFileSync("./scrap-data/amazon-category.json", JSON.stringify(allData, null, 2));
 
     browser.close();
     return results;

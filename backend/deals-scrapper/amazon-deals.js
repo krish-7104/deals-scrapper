@@ -34,17 +34,11 @@ const getAmazonDealsScrapper = async () => {
             }));
             allData.push(productsData)
             await browser.close();
-            const data = parsedData.reduce((acc, currentData) => {
-                return acc.concat(currentData);
-            }, []);
-            fs.writeFileSync("amazon.json", JSON.stringify(allData, null, 2));
-
         }
+        fs.writeFileSync("./scrap-data/amazon.json", JSON.stringify(data, null, 2));
     } catch (error) {
         console.error('Error scraping data:', error);
     }
-
-    fs.writeFileSync("./scrap-data/amazon.json", JSON.stringify(allData, null, 2));
 }
 
 getAmazonDealsScrapper()
