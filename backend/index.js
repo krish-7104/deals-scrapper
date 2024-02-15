@@ -32,7 +32,7 @@ cron.schedule('0 7 * * *', () => { //7:00 am
     getAmazonCategoryScrapper()
 });
 
-cron.schedule('20 38 11 * * *', () => { //7:05 am
+cron.schedule('5 7 * * *', () => { //7:05 am
     getAmazonDealsScrapper()
 });
 

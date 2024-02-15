@@ -4,7 +4,7 @@ const fs = require("fs");
 
 
 const getAmazonDealsScrapper = async () => {
-    const categories = JSON.parse(fs.readFileSync("../amazon-category.json"));
+    const categories = JSON.parse(fs.readFileSync("./scrap-data/amazon-category.json"));
 
     let allData = [];
     try {
@@ -34,6 +34,9 @@ const getAmazonDealsScrapper = async () => {
             }));
             allData.push(productsData)
             await browser.close();
+            const data = parsedData.reduce((acc, currentData) => {
+                return acc.concat(currentData);
+            }, []);
             fs.writeFileSync("amazon.json", JSON.stringify(allData, null, 2));
 
         }
@@ -41,7 +44,7 @@ const getAmazonDealsScrapper = async () => {
         console.error('Error scraping data:', error);
     }
 
-    fs.writeFileSync("amazon.json", JSON.stringify(allData, null, 2));
+    fs.writeFileSync("./scrap-data/amazon.json", JSON.stringify(allData, null, 2));
 }
 
 getAmazonDealsScrapper()

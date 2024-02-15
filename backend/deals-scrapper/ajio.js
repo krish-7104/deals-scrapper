@@ -2,26 +2,24 @@ const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const fs = require("fs");
 
-const getAjioDealsScrapper = async (url, scrollTimes) => {
+const url = "https://www.ajio.com/s/offer-deals-03022021?query=%3Adiscount-desc&curated=true&curatedid=offer-deals-03022021&gridColumns=5&segmentIds=";
+
+const getAjioDealsScrapper = async (scrollIterations) => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
 
-    async function scrollToLastElement(page, times) {
-        for (let i = 0; i < times; i++) {
-            await page.evaluate(async () => {
-                await new Promise((resolve, reject) => {
-                    let lastHeight = document.body.scrollHeight;
-                    window.scrollBy(0, lastHeight);
-                    setTimeout(() => {
-                        resolve();
-                    }, 1000);
-                });
-            });
-        }
+    async function scrollToLastElement(page) {
+        previousHeight = await page.evaluate("document.body.scrollHeight");
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
+        await page.waitForFunction(
+            `document.body.scrollHeight > ${previousHeight}`
+        );
     }
 
-    await scrollToLastElement(page, scrollTimes);
+    for (let i = 0; i < scrollIterations; i++) {
+        await scrollToLastElement(page);
+    }
 
     const htmlContent = await page.content();
     const $ = cheerio.load(htmlContent);
@@ -32,9 +30,8 @@ const getAjioDealsScrapper = async (url, scrollTimes) => {
     const allData = await Promise.all(deals.map(async (element) => {
         const product = $(element);
         const link = "https://www.ajio.com" + product.find(".rilrtl-products-list__link.desktop").first().attr("href");
-        await page.waitForSelector(".imgHolder > img", { visible: true });
         if (processedUrls.has(link)) {
-            return null
+            return null;
         } else {
             processedUrls.add(link);
             return {
@@ -42,7 +39,7 @@ const getAjioDealsScrapper = async (url, scrollTimes) => {
                 discount_price: parseInt(product.find(".price").first().text().replace(/[^\d.]/g, '')),
                 original_price: parseInt(product.find(".orginal-price").first().text().replace(/[^\d.]/g, '')),
                 link: link,
-                image: product.find(".imgHolder > img").attr("src"),
+                image: product.find(".imgHolder img").attr("src"),
                 discount: parseInt(product.find(".discount").first().text().trim().replace(/[^\d.]/g, '')),
             };
         }
@@ -50,9 +47,13 @@ const getAjioDealsScrapper = async (url, scrollTimes) => {
 
     const filteredData = allData.filter(item => item !== null);
 
-    fs.writeFileSync("ajio.json", JSON.stringify(filteredData, null, 2));
+    fs.writeFileSync("./scrap-data/ajio.json", JSON.stringify(filteredData, null, 2));
     await browser.close();
 };
 
-module.exports = getAjioDealsScrapper
+getAjioDealsScrapper(4);
 
+module.exports = getAjioDealsScrapper;
+
+
+// rilrtl-lazy-img  
