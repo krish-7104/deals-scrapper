@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { sendMail } = require('../utils/reset-mail.js');
 
 exports.register = async (req, res) => {
-    let { username, email, password } = req.body;
+    let { name, email, password } = req.body;
 
     try {
         // Validation checks
@@ -15,30 +15,23 @@ exports.register = async (req, res) => {
             });
         }
 
-        if (!username || !email || !password) {
+        if (!name || !email || !password) {
             return res.status(400).json({
                 status: false,
                 message: "Empty input fields!"
             });
         }
 
-        if (typeof username !== 'string') {
+        if (typeof name !== 'string') {
             return res.status(400).json({
                 status: false,
-                message: "Username must be a string"
+                message: "Name must be a string"
             });
         }
 
-        username = username.trim();
         email = email.trim();
         password = password.trim();
 
-        if (!/^[a-zA-Z]*$/.test(username)) {
-            return res.status(400).json({
-                status: false,
-                message: "Invalid username entered"
-            });
-        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -53,7 +46,7 @@ exports.register = async (req, res) => {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const newUser = new User({
-            username,
+            name,
             email,
             password: hashedPassword
         });
