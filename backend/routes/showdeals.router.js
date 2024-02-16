@@ -10,21 +10,20 @@ const getDealsHandler = async (req, res) => {
         const myntraData = JSON.parse(fs.readFileSync("./myntra.json"))
         const dealsData = [...amazonData, ...flipkartData, ...myntraData];
         dealsData.sort((a, b) => b.discount - a.discount);
-        console.log(company)
         if (company) {
             const filteredData = dealsData.filter((a) => a.link.includes(company))
-            res.json({
+            return res.status(200).json({
                 count: filteredData.length,
                 data: filteredData
             });
         }
-        res.json({
+        return res.status(200).json({
             count: dealsData.length,
             data: dealsData
         });
     } catch (error) {
         console.error("Error fetching deals:", error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
