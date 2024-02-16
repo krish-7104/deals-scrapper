@@ -2,18 +2,20 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
+const { MYNTRA_SCRAPE_PAGE } = require('../utils/constants');
 
 puppeteer.use(StealthPlugin())
 
 const getAmazonDealsScrapper = async () => {
-    console.log("\Myntra Deals Scrap Started")
+    console.log("\nMyntra Deals Scrap Started")
     let allData = [];
     try {
-        for (let i = 0; i < 5; i++) {
-            const browser = await puppeteer.launch({ headless: true });
+        for (let i = 1; i <= MYNTRA_SCRAPE_PAGE; i++) {
+            const browser = await puppeteer.launch({ headless: false });
             const page = await browser.newPage();
             await page.goto(`https://www.myntra.com/deals?p=${i}`);
             await page.waitForSelector("img");
+            await autoScroll(page);
             const htmlContent = await page.content();
             const $ = cheerio.load(htmlContent);
             const products = $(".product-base")
@@ -41,6 +43,25 @@ const getAmazonDealsScrapper = async () => {
     } catch (error) {
         console.error('Error scraping data:', error);
     }
+}
+
+async function autoScroll(page) {
+    await page.evaluate(async () => {
+        await new Promise((resolve, reject) => {
+            var totalHeight = 0;
+            var distance = 100;
+            var timer = setInterval(() => {
+                var scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+
+                if (totalHeight >= scrollHeight) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
+        });
+    });
 }
 
 module.exports = getAmazonDealsScrapper

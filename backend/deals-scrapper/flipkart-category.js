@@ -7,7 +7,7 @@ puppeteer.use(StealthPlugin())
 
 const getFlipkartCategoryScrapper = async () => {
     const browser = await puppeteer.launch({ headless: true });
-    console.log("\Flipkart Category Scrap Started")
+    console.log("\nFlipkart Category Scrap Started")
     const page = await browser.newPage();
     let allData = [];
     await page.goto('https://www.flipkart.com/', { waitUntil: 'networkidle2' });

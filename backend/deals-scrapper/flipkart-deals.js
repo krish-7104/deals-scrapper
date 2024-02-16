@@ -1,18 +1,19 @@
 const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const fs = require("fs");
-const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const { FLIPKART_SCRAPE_PAGE } = require('../utils/constants');
 
 puppeteer.use(StealthPlugin())
 
 const getFlipkartDealsScrapper = async () => {
-    console.log("\Flipkart Deals Scrap Started")
+    console.log("\nFlipkart Deals Scrap Started")
 
     try {
         const categories = JSON.parse(fs.readFileSync("flipkart-category.json"));
 
         let allData = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < FLIPKART_SCRAPE_PAGE; i++) {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
             await page.goto(categories[i].deal_link);

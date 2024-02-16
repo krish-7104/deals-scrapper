@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
+const { AMAZON_SCRAPE_PAGE } = require('../utils/constants');
 
 puppeteer.use(StealthPlugin())
 
@@ -15,7 +16,7 @@ const getAmazonCategoryScrapper = async () => {
     await page.goto('https://www.amazon.in/deals', { waitUntil: 'networkidle2' });
 
     var results = [];
-    var lastPageNumber = 10;
+    var lastPageNumber = AMAZON_SCRAPE_PAGE;
 
     for (let index = 0; index < lastPageNumber; index++) {
         const htmlContent = await page.content();
