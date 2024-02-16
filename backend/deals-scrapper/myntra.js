@@ -17,7 +17,7 @@ const getDealsData = async (url) => {
         const product = $(element);
         return {
             title: product.find(".product-product").text().trim() + " (" + product.find(".product-brand").text().trim() + ")",
-            image: product.find("img-responsive").attr("src"),
+            image: product.find("img").first().attr("src"),
             original_price: parseInt(product.find(".product-strike").text().replace("Rs. ", "").replace(/[^\d.]/g, '')),
             discount_price: parseInt(product.find(".product-discountedPrice").first().text().replace("Rs. ", "").replace(/[^\d.]/g, '')),
             discount: parseInt(product.find(".product-discountPercentage").last().text().replace(/[^\d.]/g, '')),

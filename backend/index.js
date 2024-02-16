@@ -32,7 +32,6 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
 
-
 cron.schedule('0 7 * * *', () => { //7:00 am
     getAmazonCategoryScrapper()
 });
