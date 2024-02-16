@@ -13,7 +13,7 @@ const Navbar = () => {
             <p className="font-semibold text-xl">Deal Scrapper</p>
           </div>
         </Link>
-        <ul className="flex justify-center items-center">
+        {/* <ul className="flex justify-center items-center">
           <Link
             to={"/"}
             className={`cursor-pointer px-4 py-1 rounded-md mx-3 ${
@@ -42,7 +42,7 @@ const Navbar = () => {
           >
             Track
           </Link>
-        </ul>
+        </ul> */}
       </nav>
     </section>
   );
