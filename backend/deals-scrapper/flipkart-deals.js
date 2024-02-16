@@ -1,10 +1,15 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const fs = require("fs");
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+
+puppeteer.use(StealthPlugin())
 
 const getFlipkartDealsScrapper = async () => {
+    console.log("\Flipkart Deals Scrap Started")
+
     try {
-        const categories = JSON.parse(fs.readFileSync("./scrap-data/flipkart-category.json"));
+        const categories = JSON.parse(fs.readFileSync("flipkart-category.json"));
 
         let allData = [];
         for (let i = 0; i < 10; i++) {
@@ -37,12 +42,13 @@ const getFlipkartDealsScrapper = async () => {
             allData = allData.concat(productsData.filter(item => item !== null));
             await browser.close();
         }
-        fs.writeFileSync("./scrap-data/flipkart.json", JSON.stringify(allData, null, 2));
+        fs.writeFileSync("flipkart.json", JSON.stringify(allData, null, 2));
+        fs.appendFileSync("log.txt", `Flipkart Deals Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+        console.log("Flipkart Deals Scrap Ended")
     } catch (error) {
         console.error('Error scraping data:', error);
     }
 };
 
-getFlipkartDealsScrapper();
 
 module.exports = getFlipkartDealsScrapper;

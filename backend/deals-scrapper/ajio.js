@@ -47,13 +47,10 @@ const getAjioDealsScrapper = async (scrollIterations) => {
 
     const filteredData = allData.filter(item => item !== null);
 
-    fs.writeFileSync("./scrap-data/ajio.json", JSON.stringify(filteredData, null, 2));
+    fs.writeFileSync("ajio.json", JSON.stringify(filteredData, null, 2));
     await browser.close();
 };
 
-getAjioDealsScrapper(4);
 
 module.exports = getAjioDealsScrapper;
 
-
-// rilrtl-lazy-img  

@@ -1,8 +1,12 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const fs = require("fs");
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+
+puppeteer.use(StealthPlugin())
 
 const getDealsData = async (url) => {
+    console.log("\Myntra Deals Scrap Started")
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
@@ -21,6 +25,8 @@ const getDealsData = async (url) => {
         };
     }));
     await browser.close();
+    fs.appendFileSync("log.txt", `Myntra Deals Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+    console.log("Myntra Deals Scrap Ended")
     return allData;
 };
 

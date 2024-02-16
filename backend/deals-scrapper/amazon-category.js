@@ -1,8 +1,13 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
 
+puppeteer.use(StealthPlugin())
+
+
 const getAmazonCategoryScrapper = async () => {
+    console.log("\nAmazon Category Scrap Started")
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     let allData = [];
@@ -33,8 +38,9 @@ const getAmazonCategoryScrapper = async () => {
             await page.waitForNavigation()
         }
     }
-    fs.writeFileSync("./scrap-data/amazon-category.json", JSON.stringify(allData, null, 2));
-
+    fs.writeFileSync("amazon-category.json", JSON.stringify(allData, null, 2));
+    fs.appendFileSync("log.txt", `Amazon Category Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+    console.log("Amazon Category Scrap Ended")
     browser.close();
     return results;
 };

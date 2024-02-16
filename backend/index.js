@@ -8,10 +8,12 @@ const { connectToMongo } = require("./database/db-connect.js")
 dotenv.config()
 
 const userRouter = require("./routes/user.route.js");
-const getAjioDealsScrapper = require("./deals-scrapper/ajio.js");
+const dealScrapperRouter = require("./routes/dealscrapper.router.js");
 const getAmazonCategoryScrapper = require("./deals-scrapper/amazon-category.js");
 const getAmazonDealsScrapper = require("./deals-scrapper/amazon-deals.js");
 const getMyntraDealsScrapper = require("./deals-scrapper/myntra.js");
+const getFlipkartCategoryScrapper = require("./deals-scrapper/flipkart-category.js");
+const getFlipkartDealsScrapper = require("./deals-scrapper/flipkart-deals.js");
 
 const app = express()
 connectToMongo()
@@ -27,23 +29,28 @@ if (process.env.NODE_ENV === 'DEVELOPMENT') {
 
 app.use("/api/v1/user", userRouter);
 
+app.use("/api/v1/scrapper", dealScrapperRouter)
+
 
 cron.schedule('0 7 * * *', () => { //7:00 am
     getAmazonCategoryScrapper()
 });
 
-cron.schedule('5 7 * * *', () => { //7:05 am
+cron.schedule('3 7 * * *', () => { //7:03 am
     getAmazonDealsScrapper()
 });
 
-cron.schedule('10 7 * * *', () => { //7:10 am
+cron.schedule('6 7 * * *', () => { //7:06 am
+    getFlipkartCategoryScrapper()
+});
+
+cron.schedule('9 7 * * *', () => { //7:09 am
+    getFlipkartDealsScrapper()
+});
+
+cron.schedule('12 7 * * *', () => { //7:12 am
     getMyntraDealsScrapper()
 });
-
-cron.schedule('15 7 * * *', () => { //7:15 am
-    getAjioDealsScrapper()
-});
-
 
 app.listen(4000, () => {
     console.log("Server is listening")

@@ -1,15 +1,17 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const fs = require("fs");
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+
+puppeteer.use(StealthPlugin())
 
 const getFlipkartCategoryScrapper = async () => {
     const browser = await puppeteer.launch({ headless: true });
+    console.log("\Flipkart Category Scrap Started")
     const page = await browser.newPage();
     let allData = [];
     await page.goto('https://www.flipkart.com/', { waitUntil: 'networkidle2' });
-
     const processedUrls = new Set();
-
     const htmlContent = await page.content();
     const $ = cheerio.load(htmlContent);
     const categories = $(".css-1dbjc4n");
@@ -33,8 +35,9 @@ const getFlipkartCategoryScrapper = async () => {
         }
     }));
     allData = currentPageData.filter((data) => data !== null)
-    fs.writeFileSync("./scrap-data/flipkart-category.json", JSON.stringify(allData, null, 2));
-
+    fs.writeFileSync("flipkart-category.json", JSON.stringify(allData, null, 2));
+    fs.appendFileSync("log.txt", `Flipkart Category Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+    console.log("Amazon Category Scrap Ended")
     browser.close();
     return allData;
 };
