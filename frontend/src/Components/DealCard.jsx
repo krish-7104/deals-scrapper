@@ -2,6 +2,11 @@ import React from "react";
 import { TbDiscount2 } from "react-icons/tb";
 
 const DealCard = ({ deal }) => {
+  const getLogoHandler = () => {
+    if (deal.link.includes("myntra")) return "myntra.png";
+    if (deal.link.includes("amazon")) return "amazon.png";
+    if (deal.link.includes("flipkart")) return "flipkart.png";
+  };
   const { title, image, original_price, discount_price, link, discount } = deal;
   return (
     <section
@@ -17,10 +22,17 @@ const DealCard = ({ deal }) => {
           </div>
           <span className="bg-red-600 text-white px-3 py-1 rounded-2xl text-sm font-medium ml-auto text-center flex justify-center items-center">
             <TbDiscount2 className="animate-spin-slow text-lg mr-1" />
-            {discount}%
+            {discount
+              ? discount
+              : (
+                  ((original_price - discount_price) / original_price) *
+                  100
+                ).toFixed(0)}
+            %
           </span>
         </div>
-        <p className="line-clamp-3">{title}</p>
+        <p className="line-clamp-3 text-sm">{title}</p>
+        <img src={getLogoHandler()} alt="" className="w-6 mt-3" />
       </div>
     </section>
   );
