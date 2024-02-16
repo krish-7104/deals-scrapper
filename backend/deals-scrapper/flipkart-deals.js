@@ -13,7 +13,7 @@ const getFlipkartDealsScrapper = async () => {
 
         let allData = [];
         for (let i = 0; i < 10; i++) {
-            const browser = await puppeteer.launch({ headless: false });
+            const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
             await page.goto(categories[i].deal_link);
             const htmlContent = await page.content();

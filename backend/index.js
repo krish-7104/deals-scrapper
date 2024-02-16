@@ -9,6 +9,7 @@ dotenv.config()
 
 const userRouter = require("./routes/user.route.js");
 const dealScrapperRouter = require("./routes/dealscrapper.router.js");
+const showDealsRouter = require("./routes/showdeals.router.js");
 const getAmazonCategoryScrapper = require("./deals-scrapper/amazon-category.js");
 const getAmazonDealsScrapper = require("./deals-scrapper/amazon-deals.js");
 const getMyntraDealsScrapper = require("./deals-scrapper/myntra.js");
@@ -28,8 +29,8 @@ if (process.env.NODE_ENV === 'DEVELOPMENT') {
 }
 
 app.use("/api/v1/user", userRouter);
-
 app.use("/api/v1/scrapper", dealScrapperRouter)
+app.use("/api/v1/show", showDealsRouter)
 
 
 cron.schedule('0 7 * * *', () => { //7:00 am
