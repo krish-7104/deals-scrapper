@@ -11,7 +11,7 @@ const getAmazonDealsScrapper = async () => {
     let allData = [];
     try {
         for (let i = 1; i <= MYNTRA_SCRAPE_PAGE; i++) {
-            const browser = await puppeteer.launch({ headless: false });
+            const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
             await page.goto(`https://www.myntra.com/deals?p=${i}`);
             await page.waitForSelector("img");
@@ -20,20 +20,40 @@ const getAmazonDealsScrapper = async () => {
             const $ = cheerio.load(htmlContent);
             const products = $(".product-base")
             const productsData = await Promise.all(products.map(async (index, element) => {
+                const processedUrls = new Set();
                 const product = $(element);
-                return {
-                    title: product.find(".product-product").text().trim() + " (" + product.find(".product-brand").text().trim() + ")",
-                    image: product.find("img").attr("src"),
-                    original_price: parseInt(product.find(".product-strike").text().replace("Rs. ", "").replace(/[^\d.]/g, '')),
-                    discount_price: parseInt(product.find(".product-discountedPrice").first().text().replace("Rs. ", "").replace(/[^\d.]/g, '')),
-                    discount: parseInt(product.find(".product-discountPercentage").last().text().replace(/[^\d.]/g, '')),
-                    link: "https://www.myntra.com/" + product.find("a").first().attr("href")
-                };
+                const title = product.find(".product-product").text().trim() + " (" + product.find(".product-brand").text().trim() + ")"
+                const image = product.find("img").attr("src")
+                const original_price = parseInt(product.find(".product-strike").text().replace("Rs. ", "").replace(/[^\d.]/g, ''))
+                const discount_price = parseInt(product.find(".product-discountedPrice").first().text().replace("Rs. ", "").replace(/[^\d.]/g, ''))
+                const discount = parseInt(product.find(".product-discountPercentage").last().text().replace(/[^\d.]/g, ''))
+                const link = "https://www.myntra.com/" + product.find("a").first().attr("href")
+                if (link && image && title && discount_price && original_price && discount) {
+                    if (processedUrls.has(link)) {
+                        return null;
+                    } else {
+                        if (!discount) {
+                            discount = (
+                                ((original_price - discount_price) / original_price) *
+                                100
+                            ).toFixed(0)
+                        }
+                        processedUrls.add(link);
+                        return {
+                            link,
+                            image,
+                            title,
+                            discount_price,
+                            original_price,
+                            discount
+                        };
+                    }
+                }
+                return null;
             }));
             allData.push(productsData)
             await browser.close();
         }
-
         const data = allData.reduce((acc, currentData) => {
             return acc.concat(currentData);
         }, []);
