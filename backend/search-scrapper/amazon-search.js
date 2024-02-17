@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const { findMatch } = require("../utils/search-match.js")
 
-const getSearchProductHandler = async (req, res) => {
+const getAmazonSearchProductHandler = async (req, res) => {
     try {
         const search_query = req.query.q;
         if (!search_query) {
@@ -47,4 +47,4 @@ const getSearchProductHandler = async (req, res) => {
     }
 }
 
-module.exports = getSearchProductHandler
+module.exports = getAmazonSearchProductHandler

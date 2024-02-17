@@ -4,13 +4,11 @@ const fs = require("fs");
 
 const getDealsHandler = async (req, res) => {
     try {
-        const { company } = req.query;
+        const { company, search } = req.query;
         const amazonData = JSON.parse(fs.readFileSync("./amazon.json"));
         const flipkartData = JSON.parse(fs.readFileSync("./flipkart.json"));
         const myntraData = JSON.parse(fs.readFileSync("./myntra.json"));
-
         let dealsData = [...amazonData, ...flipkartData, ...myntraData];
-
         const uniqueDealsSet = new Set();
         dealsData.forEach(deal => uniqueDealsSet.add(deal.link));
         dealsData = Array.from(uniqueDealsSet).map(link => dealsData.find(deal => deal.link === link));
@@ -18,11 +16,10 @@ const getDealsHandler = async (req, res) => {
         dealsData.sort((a, b) => b.discount - a.discount);
 
         if (company) {
-            const filteredData = dealsData.filter(a => a.link.includes(company));
-            return res.status(200).json({
-                count: filteredData.length,
-                data: filteredData
-            });
+            dealsData = dealsData.filter(deal => deal.link.includes(company));
+        }
+        if (search) {
+            dealsData = dealsData.filter(deal => deal.title.includes(search));
         }
 
         return res.status(200).json({
@@ -34,6 +31,7 @@ const getDealsHandler = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
 
 router.get("/deals", getDealsHandler);
 
