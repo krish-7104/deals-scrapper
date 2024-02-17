@@ -25,6 +25,7 @@ const amazonPriceScrape = async (url) => {
             .find("img#landingImage")
             .attr("src")
         return product
+        
     } catch (error) {
         console.log("Amazon Price Scrapper Error: \n", error)
         return null
