@@ -1,91 +1,90 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import DealsView from "./Components/Home Page/DealsView";
+import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
-import DealCard from "./Components/DealCard";
+import { API_LINK } from "./utils/baseApi";
+import CompareView from "./Components/Home Page/CompareView";
+
 const Home = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [company, setCompany] = useState("all");
-  const getAllProductHandler = async () => {
-    try {
-      setLoading(true);
-      const resp = await axios("http://localhost:4000/api/v1/show/deals");
-      const data = resp.data.data;
-      setData(data);
-      setLoading(false);
-    } catch (error) {}
+  const [search, setSearch] = useState("");
+  const [dealsVisible, setDealsVisible] = useState(true);
+  const [compareSectionShow, setCompareSectionShow] = useState(false);
+  const [data, setData] = useState({
+    amazon: {},
+    flipkart: {},
+  });
+  const clearSearchHandler = (e) => {
+    e.preventDefault();
+    setDealsVisible(true);
+    setSearch("");
+    setCompareSectionShow(false);
   };
 
-  useEffect(() => {
-    getAllProductHandler();
-  }, []);
-
-  const getCategoryDataHandler = async (company) => {
+  const searchProductHandler = async (e) => {
+    e.preventDefault();
+    setDealsVisible(false);
+    setCompareSectionShow(false);
     try {
-      setLoading(true);
-      const resp = await axios(
-        `http://localhost:4000/api/v1/show/deals?company=${company}`
+      const amazonResp = await axios(`${API_LINK}/search/amazon?q=${search}`);
+      const flipkartResp = await axios(
+        `${API_LINK}/search/flipkart?q=${search}`
       );
-      const data = resp.data.data;
-      setData(data);
-      setLoading(false);
-    } catch (error) {}
+      const formattedData = [
+        { company: "amazon", ...amazonResp.data },
+        { company: "flipkart", ...flipkartResp.data },
+      ].sort((a, b) => a.discount > b.discount);
+      console.log(formattedData);
+      setData(formattedData);
+      setCompareSectionShow(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <main className="bg-slate-200 min-h-[100vh] w-full flex flex-col justify-center items-center">
-      <ul className="flex mt-8 mb-4 w-[50%] mx-auto justify-evenly items-center">
-        <li
-          className={`${
-            company === "all" && "border-red-600 border-2"
-          } py-[4px] px-6 rounded-lg w-[120px] text-center cursor-pointer tranisiton-animate bg-white`}
-          onClick={() => {
-            setCompany("all");
-            getAllProductHandler();
-          }}
+    <main>
+      <section
+        className={`w-full ${
+          dealsVisible ? "h-[300px]  bg-slate-100" : "my-10"
+        } relative top-0 left-0 flex justify-center items-center flex-col overflow-y`}
+      >
+        <p className="mb-3 font-medium text-xl">
+          Search Product and We Will Find Best Deals
+        </p>
+        <form
+          className="w-[40%] shadow-md border flex bg-white rounded-md"
+          onSubmit={!dealsVisible ? clearSearchHandler : searchProductHandler}
         >
-          All
-        </li>
-        <li
-          className={`${
-            company === "amazon" && "border-red-600 border-2"
-          } py-[4px] px-6 rounded-lg w-[120px] text-center cursor-pointer tranisiton-animate bg-white`}
-          onClick={() => {
-            setCompany("amazon");
-            getCategoryDataHandler("amazon");
-          }}
-        >
-          Amazon
-        </li>
-        <li
-          className={`${
-            company === "flipkart" && "border-red-600 border-2"
-          } py-[4px] px-6 rounded-lg w-[120px] text-center cursor-pointer tranisiton-animate bg-white`}
-          onClick={() => {
-            setCompany("flipkart");
-            getCategoryDataHandler("flipkart");
-          }}
-        >
-          Flipkart
-        </li>
-        <li
-          className={`${
-            company === "myntra" && "border-red-600 border-2"
-          } py-[4px] px-6 rounded-lg w-[120px] text-center cursor-pointer tranisiton-animate bg-white`}
-          onClick={() => {
-            setCompany("myntra");
-            getCategoryDataHandler("myntra");
-          }}
-        >
-          Myntra
-        </li>
-      </ul>
-      <section className="bg-slate-200 min-h-[100vh] w-full flex justify-evenly items-center flex-wrap pt-6">
-        {!loading &&
-          data &&
-          data.map((deal) => {
-            return <DealCard deal={deal} />;
-          })}
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full relative py-3 px-5 outline-none"
+            placeholder="Enter Product Name..."
+          />
+          <button
+            type="button"
+            className="text-2xl mr-3 cursor-pointer"
+            onClick={!dealsVisible ? clearSearchHandler : searchProductHandler}
+          >
+            {!dealsVisible ? (
+              <AiOutlineClose className="text-xl" />
+            ) : (
+              <AiOutlineSearch />
+            )}
+          </button>
+        </form>
       </section>
+      {compareSectionShow && (
+        <section className="pb-10">
+          <section className="grid grid-cols-2 mx-auto w-[70%] gap-10">
+            {data.map((deal) => {
+              return <CompareView data={deal} />;
+            })}
+          </section>
+        </section>
+      )}
+      {dealsVisible && <DealsView />}
     </main>
   );
 };

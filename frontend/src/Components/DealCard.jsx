@@ -9,9 +9,11 @@ const DealCard = ({ deal }) => {
   };
   const { title, image, original_price, discount_price, link, discount } = deal;
   return (
-    <section
-      className="w-[30%] bg-white shadow-md p-4 rounded-md mb-6 flex cursor-pointer"
-      onClick={() => window.open(link)}
+    <a
+      className="bg-white shadow-md p-4 rounded-md flex cursor-pointer h-[160px]"
+      href={link}
+      target="_blank"
+      rel="noreferrer"
     >
       <img src={image} alt="" className="w-1/3 h-32 object-contain mr-4 py-2" />
       <div className="flex flex-col justify-start items-start w-2/3">
@@ -20,7 +22,7 @@ const DealCard = ({ deal }) => {
             <p className="font-semibold text-xl mr-2">₹{discount_price}</p>
             <p className="font-medium line-through">₹{original_price}</p>
           </div>
-          <span className="bg-red-600 text-white px-3 py-1 rounded-2xl text-sm font-medium ml-auto text-center flex justify-center items-center">
+          <span className="border-red-600 text-red-600 border-2 px-2 py-[2px] rounded-2xl text-sm font-medium ml-auto text-center flex justify-center items-center">
             <TbDiscount2 className="animate-spin-slow text-lg mr-1" />
             {discount
               ? discount
@@ -34,7 +36,7 @@ const DealCard = ({ deal }) => {
         <p className="line-clamp-3 text-sm">{title}</p>
         <img src={getLogoHandler()} alt="" className="w-6 mt-3" />
       </div>
-    </section>
+    </a>
   );
 };
 

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const [active, setActive] = useState("home");
   return (
-    <section className="w-full shadow border-b">
+    <section className="w-full shadow border-b bg-white">
       <nav className="flex justify-between items-center px-10 py-3 max-w-7xl mx-auto">
         <Link to={"/"} onClick={() => setActive("home")}>
           <div className="flex justify-center items-center">
