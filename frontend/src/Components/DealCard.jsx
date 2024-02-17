@@ -6,6 +6,7 @@ const DealCard = ({ deal }) => {
     if (deal.link.includes("myntra")) return "myntra.png";
     if (deal.link.includes("amazon")) return "amazon.png";
     if (deal.link.includes("flipkart")) return "flipkart.png";
+    if (deal.link.includes("ajio")) return "ajio.png";
   };
   const { title, image, original_price, discount_price, link, discount } = deal;
   return (
