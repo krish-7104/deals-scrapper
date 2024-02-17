@@ -7,6 +7,7 @@ const DealCard = ({ deal }) => {
     if (deal.link.includes("amazon")) return "amazon.png";
     if (deal.link.includes("flipkart")) return "flipkart.png";
     if (deal.link.includes("ajio")) return "ajio.png";
+    if (deal.link.includes("meesho")) return "meesho.png";
   };
   const { title, image, original_price, discount_price, link, discount } = deal;
   return (
@@ -21,18 +22,22 @@ const DealCard = ({ deal }) => {
         <div className="flex justify-between items-end w-full mb-2">
           <div className="flex items-end">
             <p className="font-semibold text-xl mr-2">₹{discount_price}</p>
-            <p className="font-medium line-through">₹{original_price}</p>
+            {original_price && (
+              <p className="font-medium line-through">₹{original_price}</p>
+            )}
           </div>
-          <span className="border-red-600 text-red-600 border-2 px-2 py-[2px] rounded-2xl text-sm font-medium ml-auto text-center flex justify-center items-center">
-            <TbDiscount2 className="animate-spin-slow text-lg mr-1" />
-            {discount
-              ? discount
-              : (
-                  ((original_price - discount_price) / original_price) *
-                  100
-                ).toFixed(0)}
-            %
-          </span>
+          {original_price && discount_price && (
+            <span className="border-red-600 text-red-600 border-2 px-2 py-[2px] rounded-2xl text-sm font-medium ml-auto text-center flex justify-center items-center">
+              <TbDiscount2 className="animate-spin-slow text-lg mr-1" />
+              {discount
+                ? discount
+                : (
+                    ((original_price - discount_price) / original_price) *
+                    100
+                  ).toFixed(0)}
+              %
+            </span>
+          )}
         </div>
         <p className="line-clamp-3 text-sm">{title}</p>
         <img src={getLogoHandler()} alt="" className="w-6 mt-3" />

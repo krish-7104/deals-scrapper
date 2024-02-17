@@ -13,7 +13,7 @@ const DealsView = () => {
   const [showScrollUp, setShowScrollUp] = useState(false);
   const [search, setSearch] = useState();
   const [searchVisible, setSearchVisible] = useState(true);
-  const companies = ["all", "amazon", "flipkart", "myntra", "ajio"];
+  const companies = ["all", "amazon", "flipkart", "myntra", "ajio", "meesho"];
 
   const getAllProductHandler = async () => {
     try {
