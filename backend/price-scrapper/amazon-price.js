@@ -1,7 +1,7 @@
 const axios = require("axios")
 const cheerio = require('cheerio');
 
-const product = { name: "", discount_price: "", real_price: "", discount: "", image: "" };
+const product = { name: "", discount_price: "", original_price: "", discount: "", image: "" };
 
 const amazonPriceScrape = async (url) => {
     try {
@@ -17,7 +17,7 @@ const amazonPriceScrape = async (url) => {
             .find(".a-price-whole")
             .first()
             .text().replace(".", "").replace(/[^\d.]/g, ''))
-        product.real_price = parseInt($(item)
+        product.original_price = parseInt($(item)
             .find(".a-size-small.aok-offscreen")
             .first()
             .text().trim().replace("M.R.P.: ").replace(/[^\d.]/g, ''))
@@ -25,7 +25,7 @@ const amazonPriceScrape = async (url) => {
             .find("img#landingImage")
             .attr("src")
         return product
-        
+
     } catch (error) {
         console.log("Amazon Price Scrapper Error: \n", error)
         return null

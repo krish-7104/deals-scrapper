@@ -6,32 +6,28 @@ puppeteer.use(StealthPlugin())
 
 const product = { name: "", discount_price: "", original_price: "", discount: "", image: "" };
 
-const flipkartPriceScrapper = async (url) => {
+const myntraPriceScrapper = async (url) => {
     try {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: 'domcontentloaded' });
         const htmlContent = await page.content();
         const $ = cheerio.load(htmlContent);
-        const item = $("._1YokD2._2GoDe3");
-        product.name = $(item).find(".B_NuCI").text().trim();
-        product.discount = parseInt($(item)
-            .find("._3Ay6Sb._31Dcoz")
+        product.name = $(".pdp-name").text().trim() + `(${$(".pdp-title").text().trim()})`;
+        product.discount = parseInt($
+            (".pdp-discount")
             .text().replace(/[^\d.]/g, ''))
-        product.discount_price = parseInt($(item)
-            .find("._30jeq3._16Jk6d")
+        product.discount_price = parseInt($
+            (".pdp-price")
             .text().replace(/[^\d.]/g, ''))
-        product.original_price = parseInt($(item)
-            .find("._3I9_wc._2p6lqe")
+        product.original_price = parseInt($
+            (".pdp-mrp s")
             .text().trim().replace(/[^\d.]/g, ''))
-        product.image = $(item)
-            .find("._396cs4._2amPTt._3qGmMb")
-            .attr("src")
         return product
     } catch (error) {
-        console.log("Flipkart Price Scrapper Error: \n", error)
+        console.log("Myntra Price Scrapper Error: \n", error)
         return null
     }
 }
 
-module.exports = flipkartPriceScrapper
+module.exports = myntraPriceScrapper
