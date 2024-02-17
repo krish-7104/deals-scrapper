@@ -59,7 +59,7 @@ const getAjioDealsScrapper = async () => {
     const filteredData = allData.filter(item => item !== null);
 
     fs.writeFileSync("ajio.json", JSON.stringify(filteredData, null, 2));
-    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Myntra Deals Scrapper Run\n`);
+    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Ajio Deals Scrapper Run\n`);
     console.log("Ajio Deals Scrap Ended")
     await browser.close();
 };

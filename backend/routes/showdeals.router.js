@@ -9,7 +9,8 @@ const getDealsHandler = async (req, res) => {
         const flipkartData = JSON.parse(fs.readFileSync("./flipkart.json"));
         const myntraData = JSON.parse(fs.readFileSync("./myntra.json"));
         const ajioData = JSON.parse(fs.readFileSync("./ajio.json"));
-        let dealsData = [...amazonData, ...flipkartData, ...myntraData, ...ajioData];
+        const meeshoData = JSON.parse(fs.readFileSync("./meesho.json"));
+        let dealsData = [...amazonData, ...flipkartData, ...myntraData, ...ajioData, ...meeshoData];
         const uniqueDealsSet = new Set();
         dealsData.forEach(deal => uniqueDealsSet.add(deal.link));
         dealsData = Array.from(uniqueDealsSet).map(link => dealsData.find(deal => deal.link === link));
