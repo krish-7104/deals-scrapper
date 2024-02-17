@@ -50,7 +50,7 @@ const getFlipkartDealsScrapper = async () => {
             await browser.close();
         }
         fs.writeFileSync("flipkart.json", JSON.stringify(allData, null, 2));
-        fs.appendFileSync("log.txt", `Flipkart Deals Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+        fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Flipkart Deals Scrapper Run\n`);
         console.log("Flipkart Deals Scrap Ended")
     } catch (error) {
         console.error('Error scraping data:', error);

@@ -40,7 +40,7 @@ const getAmazonCategoryScrapper = async () => {
         }
     }
     fs.writeFileSync("amazon-category.json", JSON.stringify(allData, null, 2));
-    fs.appendFileSync("log.txt", `Amazon Category Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Amazon Category Scrapper Run\n`);
     console.log("Amazon Category Scrap Ended")
     browser.close();
     return results;

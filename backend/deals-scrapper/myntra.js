@@ -58,7 +58,7 @@ const getAmazonDealsScrapper = async () => {
             return acc.concat(currentData);
         }, []);
         fs.writeFileSync("myntra.json", JSON.stringify(data, null, 2));
-        fs.appendFileSync("log.txt", `Myntra Deals Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+        fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Myntra Deals Scrapper Run\n`);
         console.log("Myntra Deals Scrap Ended")
     } catch (error) {
         console.error('Error scraping data:', error);

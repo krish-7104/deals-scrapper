@@ -36,7 +36,7 @@ const getFlipkartCategoryScrapper = async () => {
     }));
     allData = currentPageData.filter((data) => data !== null)
     fs.writeFileSync("flipkart-category.json", JSON.stringify(allData, null, 2));
-    fs.appendFileSync("log.txt", `Flipkart Category Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Flipkart Category Scrapper Run\n`);
     console.log("Flipkart Category Scrap Ended")
     browser.close();
     return allData;

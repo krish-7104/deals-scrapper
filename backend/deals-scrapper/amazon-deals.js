@@ -42,7 +42,7 @@ const getAmazonDealsScrapper = async () => {
             return acc.concat(currentData);
         }, []);
         fs.writeFileSync("amazon.json", JSON.stringify(data, null, 2));
-        fs.appendFileSync("log.txt", `Amazon Deals Scrapper Run at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`);
+        fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Amazon Deals Scrapper Run\n`);
         console.log("Amazon Deals Scrap Ended")
     } catch (error) {
         console.error('Error scraping data:', error);
