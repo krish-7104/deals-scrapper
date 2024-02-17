@@ -3,10 +3,12 @@ const router = express.Router();
 const AmazonSearchProduct = require('../search-scrapper/amazon-search.js');
 const flipkartPriceScrapper = require('../price-scrapper/flipkart-price.js');
 const MyntraSearchProduct = require('../search-scrapper/myntra-search.js');
+const AjioSearchProduct = require('../search-scrapper/ajio-search.js');
 
 router.route('/amazon').get(AmazonSearchProduct);
 router.route('/flipkart').get(flipkartPriceScrapper);
 router.route('/myntra').get(MyntraSearchProduct);
+router.route('/ajio').get(AjioSearchProduct);
 
 
 module.exports = router;
