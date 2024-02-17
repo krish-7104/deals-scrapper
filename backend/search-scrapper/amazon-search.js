@@ -1,7 +1,9 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
 const { findMatch } = require("../utils/search-match.js")
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(StealthPlugin())
 
-const getAmazonSearchProductHandler = async (req, res) => {
+const AmazonSearchProduct = async (req, res) => {
     try {
         const search_query = req.query.q;
         if (!search_query) {
@@ -38,7 +40,12 @@ const getAmazonSearchProductHandler = async (req, res) => {
         if (products.data.length > 0) {
             const product_index = findMatch(search_query, products.titles);
             if (product_index !== null) {
-                return res.json(products.data[product_index]);
+                const bestMatch = products.data[product_index];
+                const otherProducts = products.data.filter((_, index) => index !== product_index);
+                return res.json({
+                    best: bestMatch,
+                    data: otherProducts
+                });
             }
         }
         return res.status(404).json({ error: 'No matching product found' });
@@ -47,4 +54,4 @@ const getAmazonSearchProductHandler = async (req, res) => {
     }
 }
 
-module.exports = getAmazonSearchProductHandler
+module.exports = AmazonSearchProduct

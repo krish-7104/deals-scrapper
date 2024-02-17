@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const { findMatch } = require("../utils/search-match.js")
 
-const getFlipkartSearchProductHandler = async (req, res) => {
+const FlipkartSearchProduct = async (req, res) => {
     try {
         const search_query = req.query.q;
         if (!search_query) {
@@ -38,13 +38,16 @@ const getFlipkartSearchProductHandler = async (req, res) => {
         if (products.data.length > 0) {
             const product_index = findMatch(search_query, products.titles);
             if (product_index !== null) {
-                return res.json(products.data[product_index]);
+                return res.json({
+                    best: products.data[product_index],
+                    data: products.data
+                });
             }
         }
         return res.status(404).json({ error: 'No matching product found' });
     } catch (error) {
-        console.log("Get Amazon Search Product Error: \n", error)
+        console.log("Get Flipkart Search Product Error: \n", error)
     }
 }
 
-module.exports = getFlipkartSearchProductHandler
+module.exports = FlipkartSearchProduct

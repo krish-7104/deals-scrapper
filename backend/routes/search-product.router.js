@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const getAmazonSearchProductHandler = require('../search-scrapper/amazon-search.js');
-const getFlipkartSearchProductHandler = require('../search-scrapper/flipkart-search.js');
+const AmazonSearchProduct = require('../search-scrapper/amazon-search.js');
+const flipkartPriceScrapper = require('../price-scrapper/flipkart-price.js');
+const MyntraSearchProduct = require('../search-scrapper/myntra-search.js');
 
-router.route('/amazon').get(getAmazonSearchProductHandler);
-router.route('/flipkart').get(getFlipkartSearchProductHandler);
+router.route('/amazon').get(AmazonSearchProduct);
+router.route('/flipkart').get(flipkartPriceScrapper);
+router.route('/myntra').get(MyntraSearchProduct);
 
 
 module.exports = router;
