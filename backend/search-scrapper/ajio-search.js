@@ -9,7 +9,7 @@ const AjioSearchProduct = async (req, res) => {
         if (!search_query) {
             return res.status(400).json({ error: 'No search query provided' });
         }
-        const browser = await puppeteer.launch({ headless: false });
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
         await page.goto(`https://www.ajio.com/search/?text=${search_query}`, { waitUntil: 'networkidle2' });
         async function autoScroll(page) {

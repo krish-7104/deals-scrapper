@@ -16,6 +16,7 @@ const getAmazonDealsScrapper = require("./deals-scrapper/amazon-deals.js");
 const getMyntraDealsScrapper = require("./deals-scrapper/myntra.js");
 const getFlipkartCategoryScrapper = require("./deals-scrapper/flipkart-category.js");
 const getFlipkartDealsScrapper = require("./deals-scrapper/flipkart-deals.js");
+const getAjioDealsScrapper = require("./deals-scrapper/ajio.js");
 
 const app = express()
 connectToMongo()
@@ -52,6 +53,10 @@ cron.schedule('9 7 * * *', () => { //7:09 am
 
 cron.schedule('12 7 * * *', () => { //7:12 am
     getMyntraDealsScrapper()
+});
+
+cron.schedule('14 7 * * *', () => { //7:12 am
+    getAjioDealsScrapper()
 });
 
 app.listen(4000, () => {

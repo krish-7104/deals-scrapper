@@ -1,25 +1,36 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
+const { AJIO_DISTANCE, AJIO_HEIGHT } = require('../utils/constants');
 
 const url = "https://www.ajio.com/s/offer-deals-03022021?query=%3Adiscount-desc&curated=true&curatedid=offer-deals-03022021&gridColumns=5&segmentIds=";
 
-const getAjioDealsScrapper = async (scrollIterations) => {
-    const browser = await puppeteer.launch({ headless: false });
+const getAjioDealsScrapper = async () => {
+    console.log("\nAjio Deals Scrap Started")
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
 
-    async function scrollToLastElement(page) {
-        previousHeight = await page.evaluate("document.body.scrollHeight");
-        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
-        await page.waitForFunction(
-            `document.body.scrollHeight > ${previousHeight}`
-        );
+    async function autoScroll(page) {
+        await page.evaluate(async () => {
+            await new Promise((resolve, reject) => {
+                var totalHeight = 0;
+                var distance = AJIO_DISTANCE;
+                var timer = setInterval(() => {
+                    var scrollHeight = document.body.scrollHeight;
+                    window.scrollBy(0, distance);
+                    totalHeight += distance;
+                    if (totalHeight >= scrollHeight || totalHeight >= AJIO_HEIGHT) {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, 100);
+            });
+        });
     }
 
-    for (let i = 0; i < scrollIterations; i++) {
-        await scrollToLastElement(page);
-    }
+    await autoScroll(page);
 
     const htmlContent = await page.content();
     const $ = cheerio.load(htmlContent);
@@ -48,6 +59,8 @@ const getAjioDealsScrapper = async (scrollIterations) => {
     const filteredData = allData.filter(item => item !== null);
 
     fs.writeFileSync("ajio.json", JSON.stringify(filteredData, null, 2));
+    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Myntra Deals Scrapper Run\n`);
+    console.log("Ajio Deals Scrap Ended")
     await browser.close();
 };
 
