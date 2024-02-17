@@ -31,4 +31,4 @@ const amazonPriceScrape = async (url) => {
     }
 }
 
-module.exports = amazonPriceScrape
+module.exports = amazonPriceScrape;
