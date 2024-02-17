@@ -1,8 +1,8 @@
 const User = require('../models/user.model.js');
 const {priceMail} =require('../utils/price-mail');
 const cron = require('node-cron');
-const {amazonPriceScrape}=require('../price-scrapper/amazon-price');
-const {flipkartPriceScraper}=require('../price-scrapper/flipkart-price');
+const amazonPriceScrape=require('../price-scrapper/amazon-price');
+const flipkartPriceScraper=require('../price-scrapper/flipkart-price');
 
 // Schedule price comparison task to run daily at 9 a.m.
 cron.schedule('0 9 * * *', async () => {
