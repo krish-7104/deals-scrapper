@@ -17,6 +17,7 @@ const getMyntraDealsScrapper = require("./deals-scrapper/myntra.js");
 const getFlipkartCategoryScrapper = require("./deals-scrapper/flipkart-category.js");
 const getFlipkartDealsScrapper = require("./deals-scrapper/flipkart-deals.js");
 const getAjioDealsScrapper = require("./deals-scrapper/ajio.js");
+const getMeeshoDealsScrapper = require("./deals-scrapper/meesho.js");
 
 const app = express()
 connectToMongo()
@@ -35,29 +36,34 @@ app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
 app.use("/api/v1/search", searchProductRouter)
 
-cron.schedule('0 7 * * *', () => { //7:00 am
+cron.schedule('0 7 * * *', () => {
     getAmazonCategoryScrapper()
 });
 
-cron.schedule('3 7 * * *', () => { //7:03 am
+cron.schedule('2 7 * * *', () => {
     getAmazonDealsScrapper()
 });
 
-cron.schedule('6 7 * * *', () => { //7:06 am
+cron.schedule('4 7 * * *', () => {
     getFlipkartCategoryScrapper()
 });
 
-cron.schedule('9 7 * * *', () => { //7:09 am
+cron.schedule('6 7 * * *', () => {
     getFlipkartDealsScrapper()
 });
 
-cron.schedule('12 7 * * *', () => { //7:12 am
+cron.schedule('8 7 * * *', () => {
     getMyntraDealsScrapper()
 });
 
-cron.schedule('14 7 * * *', () => { //7:12 am
+cron.schedule('12 7 * * *', () => {
     getAjioDealsScrapper()
 });
+
+cron.schedule('15 7 * * *', () => {
+    getMeeshoDealsScrapper()
+});
+
 
 app.listen(4000, () => {
     console.log("Server is listening")

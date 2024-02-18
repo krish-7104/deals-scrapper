@@ -29,7 +29,7 @@ const flipkartPriceScrapper = async (url) => {
             .attr("src")
         return product
     } catch (error) {
-        console.log("Flipkart Price Scrapper Error: \n", error)
+        console.log("Flipkart Price Scrapper Error: ", error)
         return null
     }
 }

@@ -45,7 +45,7 @@ const MyntraSearchProduct = async (req, res) => {
         }
         return res.status(404).json({ error: 'No matching product found' });
     } catch (error) {
-        console.log("Get Myntra Search Product Error: \n", error)
+        console.log("Get Myntra Search Product Error: ", error)
     }
 }
 

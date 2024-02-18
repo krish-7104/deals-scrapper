@@ -2,12 +2,13 @@ const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const fs = require("fs");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const { logStart, logEnd } = require("../utils/logger.js")
 
 puppeteer.use(StealthPlugin())
 
 const getFlipkartCategoryScrapper = async () => {
     const browser = await puppeteer.launch({ headless: true });
-    console.log("\nFlipkart Category Scrap Started")
+    logStart("Flipkart Category Scrapper")
     const page = await browser.newPage();
     let allData = [];
     await page.goto('https://www.flipkart.com/', { waitUntil: 'networkidle2' });
@@ -36,8 +37,7 @@ const getFlipkartCategoryScrapper = async () => {
     }));
     allData = currentPageData.filter((data) => data !== null)
     fs.writeFileSync("flipkart-category.json", JSON.stringify(allData, null, 2));
-    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Flipkart Category Scrapper Run\n`);
-    console.log("Flipkart Category Scrap Ended")
+    logEnd("Flipkart Category Scrapper")
     browser.close();
     return allData;
 };

@@ -2,13 +2,14 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
+const { logStart, logEnd } = require("../utils/logger.js")
 
 puppeteer.use(StealthPlugin())
 
 const url = "https://www.meesho.com/";
 
 const getMeeshoDealsScrapper = async () => {
-    console.log("\nMeesho Deals Scrap Started")
+    logStart("Meesho Deals Scrapper")
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
@@ -22,7 +23,7 @@ const getMeeshoDealsScrapper = async () => {
                     var scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
-                    if (totalHeight >= scrollHeight || totalHeight >= 10000) {
+                    if (totalHeight >= scrollHeight || totalHeight >= 20000) {
                         clearInterval(timer);
                         resolve();
                     }
@@ -38,7 +39,6 @@ const getMeeshoDealsScrapper = async () => {
     const deals = $(".sc-dkrFOg.ProductList__GridCol-sc-8lnc8o-0.cokuZA.eCJiSA").toArray();
 
     const processedUrls = new Set();
-    console.log(deals.length)
     const allData = await Promise.all(deals.map(async (element) => {
         const product = $(element);
         const link = "https://www.meesho.com" + product.find("a").first().attr("href");
@@ -60,8 +60,7 @@ const getMeeshoDealsScrapper = async () => {
     const filteredData = allData.filter(item => item !== null);
 
     fs.writeFileSync("meesho.json", JSON.stringify(filteredData, null, 2));
-    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Meesho Deals Scrapper Run\n`);
-    console.log("Meesho Deals Scrap Ended")
+    logEnd("Meesho Deals Scrapper")
     await browser.close();
 };
 

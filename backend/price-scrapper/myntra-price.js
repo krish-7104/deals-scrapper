@@ -25,7 +25,7 @@ const myntraPriceScrapper = async (url) => {
             .text().trim().replace(/[^\d.]/g, ''))
         return product
     } catch (error) {
-        console.log("Myntra Price Scrapper Error: \n", error)
+        console.log("Myntra Price Scrapper Error: ", error)
         return null
     }
 }

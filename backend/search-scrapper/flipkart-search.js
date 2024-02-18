@@ -46,7 +46,7 @@ const FlipkartSearchProduct = async (req, res) => {
         }
         return res.status(404).json({ error: 'No matching product found' });
     } catch (error) {
-        console.log("Get Flipkart Search Product Error: \n", error)
+        console.log("Get Flipkart Search Product Error: ", error)
     }
 }
 

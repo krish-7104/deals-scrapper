@@ -2,15 +2,17 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
+const { AMAZON_SCRAPE_PAGE } = require('../utils/constants');
+const { logStart, logEnd } = require("../utils/logger.js")
 
 puppeteer.use(StealthPlugin())
 
 const getAmazonDealsScrapper = async () => {
     const categories = JSON.parse(fs.readFileSync("amazon-category.json"));
-    console.log("\nAmazon Deals Scrap Started")
+    logStart("Amazon Deals Scrapper")
     let allData = [];
     try {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < AMAZON_SCRAPE_PAGE; i++) {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
             await page.goto(categories[i].deal_link);
@@ -42,8 +44,7 @@ const getAmazonDealsScrapper = async () => {
             return acc.concat(currentData);
         }, []);
         fs.writeFileSync("amazon.json", JSON.stringify(data, null, 2));
-        fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Amazon Deals Scrapper Run\n`);
-        console.log("Amazon Deals Scrap Ended")
+        logEnd("Amazon Deals Scrapper")
     } catch (error) {
         console.error('Error scraping data:', error);
     }

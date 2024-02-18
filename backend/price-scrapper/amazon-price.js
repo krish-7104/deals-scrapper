@@ -27,7 +27,7 @@ const amazonPriceScrape = async (url) => {
         return product
 
     } catch (error) {
-        console.log("Amazon Price Scrapper Error: \n", error)
+        console.log("Amazon Price Scrapper Error: ", error)
         return null
     }
 }

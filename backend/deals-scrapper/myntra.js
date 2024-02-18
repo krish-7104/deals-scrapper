@@ -2,12 +2,13 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
-const { MYNTRA_SCRAPE_PAGE } = require('../utils/constants');
+const MYNTRA_SCRAPE_PAGE = 3
+const { logStart, logEnd } = require("../utils/logger.js")
 
 puppeteer.use(StealthPlugin())
 
 const getAmazonDealsScrapper = async () => {
-    console.log("\nMyntra Deals Scrap Started")
+    logStart("Myntra Deals Scrapper")
     let allData = [];
     try {
         for (let i = 1; i <= MYNTRA_SCRAPE_PAGE; i++) {
@@ -57,9 +58,8 @@ const getAmazonDealsScrapper = async () => {
         const data = allData.reduce((acc, currentData) => {
             return acc.concat(currentData);
         }, []);
-        fs.writeFileSync("myntra.json", JSON.stringify(data, null, 2));
-        fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Myntra Deals Scrapper Run\n`);
-        console.log("Myntra Deals Scrap Ended")
+        fs.writeFileSync("myntra.json", JSON.stringify(data.filter(item => item !== null), null, 2));
+        logEnd("Myntra Deals Scrapper")
     } catch (error) {
         console.error('Error scraping data:', error);
     }

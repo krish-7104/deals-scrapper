@@ -2,21 +2,21 @@ const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const fs = require("fs");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const { FLIPKART_SCRAPE_PAGE } = require('../utils/constants');
+const { logStart, logEnd } = require("../utils/logger.js")
 
 puppeteer.use(StealthPlugin())
 
 const getFlipkartDealsScrapper = async () => {
-    console.log("\nFlipkart Deals Scrap Started")
+    logStart("Flipkart Deals Scrapper")
 
     try {
         const categories = JSON.parse(fs.readFileSync("flipkart-category.json"));
 
         let allData = [];
-        for (let i = 0; i < FLIPKART_SCRAPE_PAGE; i++) {
+        for (let i = 0; i < categories.length; i++) {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
-            await page.goto(categories[i].deal_link);
+            await page.goto(categories[i]?.deal_link);
             const htmlContent = await page.content();
             const $ = cheerio.load(htmlContent);
             const products = $(".s1Q9rs");
@@ -50,8 +50,7 @@ const getFlipkartDealsScrapper = async () => {
             await browser.close();
         }
         fs.writeFileSync("flipkart.json", JSON.stringify(allData, null, 2));
-        fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Flipkart Deals Scrapper Run\n`);
-        console.log("Flipkart Deals Scrap Ended")
+        logEnd("Flipkart Deals Scrapper")
     } catch (error) {
         console.error('Error scraping data:', error);
     }
