@@ -136,7 +136,7 @@ const DealsView = () => {
       )}
       {loading && (
         <section className="bg-slate-100 min-h-[100vh] grid grid-cols-3 gap-6 my-6 w-[95%] mx-auto">
-          {Array(9)
+          {Array(12)
             .fill()
             .map((_, index) => {
               return <LoadingCard />;

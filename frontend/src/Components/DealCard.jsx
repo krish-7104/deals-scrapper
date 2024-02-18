@@ -1,5 +1,6 @@
 import React from "react";
 import { TbDiscount2 } from "react-icons/tb";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const DealCard = ({ deal }) => {
   const getLogoHandler = () => {
@@ -17,7 +18,10 @@ const DealCard = ({ deal }) => {
       target="_blank"
       rel="noreferrer"
     >
-      <img src={image} alt="" className="w-1/3 h-32 object-contain mr-4 py-2" />
+      <LazyLoadImage
+        src={image}
+        className="w-1/3 h-32 object-contain mr-4 py-2"
+      />
       <div className="flex flex-col justify-start items-start w-2/3">
         <div className="flex justify-between items-end w-full mb-2">
           <div className="flex items-end">
