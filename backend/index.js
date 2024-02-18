@@ -11,6 +11,7 @@ const userRouter = require("./routes/user.route.js");
 const dealScrapperRouter = require("./routes/dealscrapper.router.js");
 const showDealsRouter = require("./routes/showdeals.router.js");
 const searchProductRouter = require("./routes/search-product.router.js")
+const logRouter = require("./routes/logs.router.js")
 const getAmazonCategoryScrapper = require("./deals-scrapper/amazon-category.js");
 const getAmazonDealsScrapper = require("./deals-scrapper/amazon-deals.js");
 const getMyntraDealsScrapper = require("./deals-scrapper/myntra.js");
@@ -35,6 +36,9 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
 app.use("/api/v1/search", searchProductRouter)
+
+app.use("", logRouter)
+// get all logs: http://localhost:4000/log
 
 cron.schedule('0 7 * * *', () => {
     getAmazonCategoryScrapper()
@@ -66,6 +70,6 @@ cron.schedule('15 7 * * *', () => {
 
 
 app.listen(4000, () => {
-    console.log("Server is listening")
+    console.log("Server is listening on port 4000")
 })
 

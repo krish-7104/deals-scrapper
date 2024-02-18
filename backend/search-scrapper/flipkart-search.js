@@ -1,5 +1,8 @@
 const puppeteer = require('puppeteer');
 const { findMatch } = require("../utils/search-match.js")
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(StealthPlugin())
+
 
 const FlipkartSearchProduct = async (req, res) => {
     try {
