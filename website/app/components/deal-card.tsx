@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
 import { TbDiscount2 } from "react-icons/tb";
 
 interface DealProps {
@@ -13,14 +13,17 @@ interface DealProps {
 }
 
 const DealCard = ({ deal }: { deal: DealProps }) => {
-  const getLogoHandler = () => {
+  const getLogoHandler = useMemo(() => {
     if (deal.link.includes("myntra")) return "/logos/myntra.png";
     if (deal.link.includes("amazon")) return "/logos/amazon.png";
     if (deal.link.includes("flipkart")) return "/logos/flipkart.png";
     if (deal.link.includes("ajio")) return "/logos/ajio.png";
     if (deal.link.includes("meesho")) return "/logos/meesho.png";
-  };
+    return "";
+  }, [deal.link]);
+
   const { title, image, original_price, discount_price, link, discount } = deal;
+
   return (
     <Link
       className="bg-white border p-4 rounded-md flex cursor-pointer h-[160px]"
@@ -35,6 +38,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
         height={200}
         width={200}
         alt=""
+        loading="lazy"
       />
       <div className="flex flex-col justify-start items-start w-2/3">
         <div className="flex justify-between items-end w-full mb-2">
@@ -58,13 +62,16 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
           )}
         </div>
         <p className="line-clamp-3 text-sm">{title}</p>
-        <Image
-          src={getLogoHandler() || ""}
-          alt=""
-          className="w-6 mt-3"
-          height={30}
-          width={30}
-        />
+        {getLogoHandler && (
+          <Image
+            src={getLogoHandler}
+            alt=""
+            className="w-6 mt-3"
+            height={30}
+            width={30}
+            loading="lazy"
+          />
+        )}
       </div>
     </Link>
   );

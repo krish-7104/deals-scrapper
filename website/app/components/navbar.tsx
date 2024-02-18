@@ -1,14 +1,28 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TbDiscount2 } from "react-icons/tb";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [active, setActive] = useState("home");
-  const navigate = useRouter();
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(() => {
+    if (pathname === "/") {
+      setActive("home");
+    } else if (pathname === "/deals") {
+      setActive("deals");
+    } else if (pathname === "/track-product") {
+      setActive("track-product");
+    } else if (pathname === "/register") {
+      setActive("register");
+    }
+  }, [pathname]);
+
   const handleButtonClick = (buttonName: string) => {
     setActive(buttonName);
+    router.push(`/${buttonName === "home" ? "" : buttonName}`);
   };
 
   return (
@@ -19,38 +33,26 @@ const Navbar = () => {
       </div>
       <ul className="flex justify-center items-center gap-x-4">
         <Button
-          onClick={() => {
-            handleButtonClick("home");
-            navigate.push("/");
-          }}
+          onClick={() => handleButtonClick("home")}
           variant={active === "home" ? "outline" : "ghost"}
         >
           Home
         </Button>
 
         <Button
-          onClick={() => {
-            handleButtonClick("hot-deals");
-            navigate.push("/deals");
-          }}
-          variant={active === "hot-deals" ? "outline" : "ghost"}
+          onClick={() => handleButtonClick("deals")}
+          variant={active === "deals" ? "outline" : "ghost"}
         >
           Hot Deals
         </Button>
         <Button
-          onClick={() => {
-            handleButtonClick("track-product");
-            navigate.push("/track-product");
-          }}
+          onClick={() => handleButtonClick("track-product")}
           variant={active === "track-product" ? "outline" : "ghost"}
         >
           Track Product
         </Button>
         <Button
-          onClick={() => {
-            handleButtonClick("register");
-            navigate.push("/register");
-          }}
+          onClick={() => handleButtonClick("register")}
           className={active === "register" ? "active ml-2" : "ml-2"}
         >
           Register
