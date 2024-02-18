@@ -13,7 +13,7 @@ const DealsView = () => {
   const [showScrollUp, setShowScrollUp] = useState(false);
   const [search, setSearch] = useState();
   const [searchVisible, setSearchVisible] = useState(true);
-  const companies = ["all", "amazon", "flipkart", "myntra"];
+  const companies = ["all", "amazon", "flipkart", "myntra", "ajio", "meesho"];
 
   const getAllProductHandler = async () => {
     try {
@@ -136,7 +136,7 @@ const DealsView = () => {
       )}
       {loading && (
         <section className="bg-slate-100 min-h-[100vh] grid grid-cols-3 gap-6 my-6 w-[95%] mx-auto">
-          {Array(9)
+          {Array(12)
             .fill()
             .map((_, index) => {
               return <LoadingCard />;

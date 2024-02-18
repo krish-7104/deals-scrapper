@@ -1,25 +1,38 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
+puppeteer.use(StealthPlugin())
+
 
 const url = "https://www.ajio.com/s/offer-deals-03022021?query=%3Adiscount-desc&curated=true&curatedid=offer-deals-03022021&gridColumns=5&segmentIds=";
 
-const getAjioDealsScrapper = async (scrollIterations) => {
-    const browser = await puppeteer.launch({ headless: false });
+const getAjioDealsScrapper = async () => {
+    console.log("Ajio Deals Scrap Started")
+    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Ajio Deals Scrapper Run\n`);
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
 
-    async function scrollToLastElement(page) {
-        previousHeight = await page.evaluate("document.body.scrollHeight");
-        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
-        await page.waitForFunction(
-            `document.body.scrollHeight > ${previousHeight}`
-        );
+    async function autoScroll(page) {
+        await page.evaluate(async () => {
+            await new Promise((resolve, reject) => {
+                var totalHeight = 0;
+                var distance = 50;
+                var timer = setInterval(() => {
+                    var scrollHeight = document.body.scrollHeight;
+                    window.scrollBy(0, distance);
+                    totalHeight += distance;
+                    if (totalHeight >= scrollHeight || totalHeight >= 20000) {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, 100);
+            });
+        });
     }
 
-    for (let i = 0; i < scrollIterations; i++) {
-        await scrollToLastElement(page);
-    }
+    await autoScroll(page);
 
     const htmlContent = await page.content();
     const $ = cheerio.load(htmlContent);
@@ -30,24 +43,33 @@ const getAjioDealsScrapper = async (scrollIterations) => {
     const allData = await Promise.all(deals.map(async (element) => {
         const product = $(element);
         const link = "https://www.ajio.com" + product.find(".rilrtl-products-list__link.desktop").first().attr("href");
-        if (processedUrls.has(link)) {
-            return null;
-        } else {
-            processedUrls.add(link);
-            return {
-                title: product.find(".nameCls").first().text(),
-                discount_price: parseInt(product.find(".price").first().text().replace(/[^\d.]/g, '')),
-                original_price: parseInt(product.find(".orginal-price").first().text().replace(/[^\d.]/g, '')),
-                link: link,
-                image: product.find(".imgHolder img").attr("src"),
-                discount: parseInt(product.find(".discount").first().text().trim().replace(/[^\d.]/g, '')),
-            };
+        const title = product.find(".nameCls").first().text()
+        const discount_price = parseInt(product.find(".price").first().text().replace(/[^\d.]/g, ''))
+        const original_price = parseInt(product.find(".orginal-price").first().text().replace(/[^\d.]/g, ''))
+        const image = product.find(".imgHolder img").attr("src")
+        const discount = parseInt(product.find(".discount").first().text().trim().replace(/[^\d.]/g, ''))
+        if (image) {
+            if (processedUrls.has(link)) {
+                return null;
+            } else {
+                processedUrls.add(link);
+                return {
+                    link,
+                    image,
+                    title,
+                    discount_price,
+                    original_price,
+                    discount
+                };
+            }
         }
+        return null;
+
     }));
-
-    const filteredData = allData.filter(item => item !== null);
-
+    allData = allData.concat(productsData.filter(item => item !== null));
     fs.writeFileSync("ajio.json", JSON.stringify(filteredData, null, 2));
+    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Ajio Deals Scrapper Run\n`);
+    console.log("Ajio Deals Scrap Ended")
     await browser.close();
 };
 
