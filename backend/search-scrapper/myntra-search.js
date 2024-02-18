@@ -16,6 +16,8 @@ const MyntraSearchProduct = async (req, res) => {
         const products = await page.evaluate(() => {
             const data = [];
             const titles = [];
+            const processedUrls = new Set();
+
             document.querySelectorAll('.product-base').forEach(product => {
                 if (product) {
                     const title = product.querySelector('.product-product')?.innerText.trim();
@@ -24,10 +26,12 @@ const MyntraSearchProduct = async (req, res) => {
                     const discount = product.querySelector('.product-discountPercentage')?.innerText.replace("Rs. ", "").replace(/[^\d.]/g, '');
                     const link = 'https://www.myntra.com' + product.querySelector('a')?.getAttribute('href');
                     const image = product.querySelector('img')?.getAttribute('src');
-                    data.push({
-                        title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image
-                    });
-                    titles.push(title)
+                    if (!processedUrls.has(link)) {
+                        data.push({
+                            title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image
+                        });
+                        titles.push(title)
+                    }
                 }
             });
             return { data, titles };
