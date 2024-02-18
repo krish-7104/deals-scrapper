@@ -8,6 +8,7 @@ const { connectToMongo } = require("./database/db-connect.js")
 dotenv.config()
 
 const userRouter = require("./routes/user.route.js");
+const userSearchRouter=require("./routes/userSearch.router.js");
 const dealScrapperRouter = require("./routes/dealscrapper.router.js");
 const showDealsRouter = require("./routes/showdeals.router.js");
 const searchProductRouter = require("./routes/search-product.router.js")
@@ -33,6 +34,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
 app.use("/api/v1/search", searchProductRouter)
+app.use("/api/v1/userSearch",userSearchRouter)
 
 cron.schedule('0 7 * * *', () => { //7:00 am
     getAmazonCategoryScrapper()

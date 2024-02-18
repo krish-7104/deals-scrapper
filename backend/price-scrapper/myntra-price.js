@@ -17,7 +17,7 @@ const myntraPriceScrapper = async (url) => {
         product.discount = parseInt($
             (".pdp-discount")
             .text().replace(/[^\d.]/g, ''))
-        product.discount_price = parseInt($
+        product.discount_price = parseInt($ 
             (".pdp-price")
             .text().replace(/[^\d.]/g, ''))
         product.original_price = parseInt($
@@ -29,5 +29,6 @@ const myntraPriceScrapper = async (url) => {
         return null
     }
 }
+
 
 module.exports = myntraPriceScrapper
