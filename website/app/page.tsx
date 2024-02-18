@@ -3,23 +3,53 @@ import axios from "axios";
 import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { API_LINK } from "./utils/base-api";
+import CompareView from "./components/Home Page/CompareView";
+import isClothingProduct from "./utils/cloth-checker";
+
+interface DealDataProp {
+  company: string;
+  best: Deal;
+  data: Deal[];
+}
+
+interface Deal {
+  title: string;
+  image: string;
+  link: string;
+  original_price: number;
+  discount_price: number;
+  discount: number;
+}
 
 const Home = () => {
   const [search, setSearch] = useState("");
-  const [data, setData] = useState({});
+  const [data, setData] = useState<DealDataProp[]>([]);
+  const [compareView, setShowCompareView] = useState(false);
 
   const searchProductHandler = async (e: any) => {
     e.preventDefault();
     try {
-      const amazonResp = await axios(`${API_LINK}/search/amazon?q=${search}`);
-      const flipkartResp = await axios(
-        `${API_LINK}/search/flipkart?q=${search}`
-      );
-      const formattedData = [
-        { company: "amazon", ...amazonResp.data },
-        { company: "flipkart", ...flipkartResp.data },
-      ].sort((a: any, b: any) => a.discount - b.discount);
+      setShowCompareView(false);
+      let formattedData;
+      if (isClothingProduct(search)) {
+        const ajioResp = await axios(`${API_LINK}/search/ajio?q=${search}`);
+        const myntraResp = await axios(`${API_LINK}/search/myntra?q=${search}`);
+        formattedData = [
+          { company: "ajio", ...ajioResp.data },
+          { company: "myntra", ...myntraResp.data },
+        ].sort((a: any, b: any) => a.discount - b.discount);
+      } else {
+        const amazonResp = await axios(`${API_LINK}/search/amazon?q=${search}`);
+        const flipkartResp = await axios(
+          `${API_LINK}/search/flipkart?q=${search}`
+        );
+        formattedData = [
+          { company: "amazon", ...amazonResp.data },
+          { company: "flipkart", ...flipkartResp.data },
+        ].sort((a: any, b: any) => a.discount - b.discount);
+      }
       setData(formattedData);
+      setShowCompareView(true);
     } catch (error) {
       console.error(error);
     }
@@ -27,7 +57,7 @@ const Home = () => {
 
   return (
     <main>
-      <section className="h-[400px] w-full flex justify-center flex-col items-center">
+      <section className="mt-20 mb-14 w-full flex justify-center flex-col items-center">
         <p className="mb-3 font-medium text-xl">
           Search Product and We Will Find Best Deals
         </p>
@@ -51,6 +81,13 @@ const Home = () => {
           </button>
         </form>
       </section>
+      {compareView && data && (
+        <section className="grid grid-cols-2 justify-center w-[80%] mx-auto">
+          {data.map((item) => {
+            return <CompareView key={item.company} data={item} />;
+          })}
+        </section>
+      )}
     </main>
   );
 };
