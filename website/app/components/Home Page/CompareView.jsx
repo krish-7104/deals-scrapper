@@ -6,7 +6,7 @@ const CompareView = ({ data }) => {
     <section>
       <div className="w-full shadow-sm flex justify-center items-center flex-col rounded border p-6">
         <div className="flex justify-between items-center w-full mb-5">
-          <span className="border-red-600 text-red-600 border-2 px-2 py-[2px] rounded-2xl text-sm font-medium text-center flex justify-center items-center ">
+          <span className="border-primary text-primary border-2 px-2 py-[2px] rounded-2xl text-sm font-medium text-center flex justify-center items-center ">
             <TbDiscount2 className="animate-spin-slow text-lg mr-1" />
             {(
               ((data.best.original_price - data.best.discount_price) /
@@ -17,7 +17,7 @@ const CompareView = ({ data }) => {
           </span>
           <span className="">
             <img
-              src={`${data.best.company}.png`}
+              src={`${data.company}.png`}
               width={30}
               height={30}
               alt={data.best.company}

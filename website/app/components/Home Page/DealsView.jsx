@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DealCard from "../DealCard";
 import { FaChevronUp } from "react-icons/fa6";
 import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 import LoadingCard from "../LoadingCard";
 import { API_LINK } from "../../utils/baseApi";
+import { useEffect, useState } from "react";
 
 const DealsView = () => {
   const [data, setData] = useState([]);
@@ -91,7 +91,7 @@ const DealsView = () => {
             <li
               key={comp}
               className={`${
-                selectedComp === comp && "border-red-600 border-2"
+                selectedComp === comp && "border-primary border-2"
               } py-[4px] px-6 rounded-full w-[120px] text-center cursor-pointer tranisiton-animate bg-white mr-5 select-none shadow`}
               onClick={() => {
                 setSelectedCompany(comp);
@@ -144,7 +144,7 @@ const DealsView = () => {
         </section>
       )}
       <button
-        className={`fixed bottom-10 right-10 bg-red-600 p-3 text-white text-base rounded-full transition-all ease-linear duration-200
+        className={`fixed bottom-10 right-10 bg-primary p-3 text-white text-base rounded-full transition-all ease-linear duration-200
           ${showScrollUp ? "scale-100" : "scale-0"}
         `}
         onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}

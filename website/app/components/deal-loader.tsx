@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingCard = () => {
+const DealLoader = () => {
   return (
     <div className="bg-white shadow-md p-4 rounded-md flex cursor-pointer h-[160px]">
       <div className="w-1/3 h-32 object-contain mr-4 py-2 bg-slate-200 animate-pulse"></div>
@@ -12,4 +12,4 @@ const LoadingCard = () => {
   );
 };
 
-export default LoadingCard;
+export default DealLoader;
