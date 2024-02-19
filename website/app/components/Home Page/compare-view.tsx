@@ -45,10 +45,14 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
         </div>
         <Image
           src={data.best.image}
+          className={`${
+            data.company === "myntra" || data.company === "ajio"
+              ? "h-[250px]"
+              : "h-[180px]"
+          } w-auto object-contain `}
           height={200}
           width={200}
           alt="product"
-          className="h-[250px] w-auto"
         />
         <div className="w-full mt-6 h-[70px]">
           <span className="font-bold text-xs">PRODUCT TITLE</span>
@@ -76,7 +80,7 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
         </div>
       </div>
       <p className="font-semibold text-lg mb-1 mt-5">Other Results</p>
-      {data.data.slice(0, 8).map((item) => {
+      {data?.data?.slice(0, 8).map((item) => {
         return (
           <DealCard deal={item} key={item.discount_price + item.discount} />
         );

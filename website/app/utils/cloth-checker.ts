@@ -31,6 +31,7 @@ const isClothingProduct = (product: string) => {
     "trainers",
     "flip flops",
     "swimsuit",
+    "Sarees",
   ];
   return clothingKeywords.some((keyword) =>
     product.toLowerCase().includes(keyword)
