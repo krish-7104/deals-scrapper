@@ -1,8 +1,8 @@
 const priceUser = require('../models/price.model.js');
-const {priceMail} =require('../utils/price-mail');
+const { priceMail } = require('../utils/price-mail');
 const cron = require('node-cron');
-const amazonPriceScrape=require('../price-scrapper/amazon-price');
-const flipkartPriceScraper=require('../price-scrapper/flipkart-price');
+const amazonPriceScrape = require('../price-scrapper/amazon-price');
+const flipkartPriceScraper = require('../price-scrapper/flipkart-price');
 
 cron.schedule('0 9 * * *', async () => {
   console.log('Running price comparison task at 9 a.m.');
@@ -15,7 +15,7 @@ cron.schedule('0 9 * * *', async () => {
 // });
 
 exports.priceToCompare = async (req, res) => {
-  const { userPrice, productUrl, userEmail } = req.body; 
+  const { userPrice, productUrl, userEmail } = req.body;
   try {
     await saveUserData(userPrice, productUrl, userEmail);
     res.send('Price comparison initiated. You will receive an email notification if the price is lower than the user-entered price.');
@@ -58,4 +58,3 @@ async function comparePricesDaily() {
   }
 }
 
- 

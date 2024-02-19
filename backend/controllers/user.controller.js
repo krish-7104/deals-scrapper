@@ -95,12 +95,12 @@ exports.login = async (req, res) => {
         let resultObject = user.toObject();
         delete resultObject.password;
 
-
         if (match) {
+            const jwtToken = jwt.sign({ ...resultObject }, 'SECRET_LOGIN', { expiresIn: '7d' });
             return res.json({
                 status: true,
                 message: "Login Successful",
-                data: resultObject
+                token: jwtToken
             });
         } else {
             return res.status(401).json({
