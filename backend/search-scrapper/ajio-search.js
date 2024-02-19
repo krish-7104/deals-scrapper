@@ -60,9 +60,11 @@ const AjioSearchProduct = async (req, res) => {
         if (products.data.length > 0) {
             const product_index = findMatch(search_query, products.titles);
             if (product_index !== null) {
+                const bestMatch = products.data[product_index];
+                const otherProducts = products.data.filter((_, index) => index !== product_index);
                 return res.json({
-                    best: products.data[product_index],
-                    data: products.data
+                    best: bestMatch,
+                    data: otherProducts
                 });
             }
         }

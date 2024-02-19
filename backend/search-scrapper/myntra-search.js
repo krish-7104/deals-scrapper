@@ -24,7 +24,7 @@ const MyntraSearchProduct = async (req, res) => {
                     const discount_price = product.querySelector('.product-discountedPrice')?.innerText.replace("Rs. ", "").replace(/[^\d.]/g, '');
                     const original_price = product.querySelector('.product-strike')?.innerText.replace("Rs. ", "").replace(/[^\d.]/g, '');
                     const discount = product.querySelector('.product-discountPercentage')?.innerText.replace("Rs. ", "").replace(/[^\d.]/g, '');
-                    const link = 'https://www.myntra.com' + product.querySelector('a')?.getAttribute('href');
+                    const link = 'https://www.myntra.com/' + product.querySelector('a')?.getAttribute('href');
                     const image = product.querySelector('img')?.getAttribute('src');
                     if (!processedUrls.has(link)) {
                         data.push({
@@ -41,9 +41,11 @@ const MyntraSearchProduct = async (req, res) => {
         if (products.data.length > 0) {
             const product_index = findMatch(search_query, products.titles);
             if (product_index !== null) {
+                const bestMatch = products.data[product_index];
+                const otherProducts = products.data.filter((_, index) => index !== product_index);
                 return res.json({
-                    best: products.data[product_index],
-                    data: products.data
+                    best: bestMatch,
+                    data: otherProducts
                 });
             }
         }
