@@ -2,14 +2,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  AiOutlineCiCircle,
   AiOutlineClose,
   AiOutlineLoading,
   AiOutlineSearch,
 } from "react-icons/ai";
-import { API_LINK } from "./utils/base-api";
+import { API_LINK } from "../utils/base-api";
 import CompareView from "@/app/components/Home Page/compare-view";
-import isClothingProduct from "@/app/utils/cloth-checker";
+import isClothingProduct from "@/utils/cloth-checker";
 import CompareLoader from "@/app/components/Home Page/compare-loader";
 
 interface DealData {
@@ -80,12 +79,12 @@ const Home = () => {
           {
             company: "Amazon",
             best: amazonResp.data.best,
-            data: amazonResp.data.deals,
+            data: amazonResp.data.data,
           },
           {
             company: "Flipkart",
             best: flipkartResp.data.best,
-            data: flipkartResp.data.deals,
+            data: flipkartResp.data.data,
           },
         ].sort((a, b) => a.best.discount - b.best.discount);
       }
@@ -124,7 +123,6 @@ const Home = () => {
             </button>
           )}
           {isComparing && (
-            // loading
             <button
               type="button"
               className="text-xl mr-3 cursor-pointer animate-spin"
