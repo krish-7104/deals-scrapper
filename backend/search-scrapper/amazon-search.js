@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer-extra');
-const { findMatch } = require("../utils/search-match.js")
-const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-puppeteer.use(StealthPlugin())
+const { findMatch } = require("../utils/search-match.js");
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+puppeteer.use(StealthPlugin());
 
 const AmazonSearchProduct = async (req, res) => {
     try {
@@ -9,10 +10,20 @@ const AmazonSearchProduct = async (req, res) => {
         if (!search_query) {
             return res.status(400).json({ error: 'No search query provided' });
         }
-        const browser = await puppeteer.launch();
+
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        });
         const page = await browser.newPage();
 
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36');
+
+        await page.setViewport({ width: 1366, height: 768 });
+
         await page.goto(`https://www.amazon.in/s?k=${search_query}`, { waitUntil: 'domcontentloaded' });
+
+        // await autoScroll(page);
 
         const products = await page.evaluate(() => {
             const data = [];
@@ -37,6 +48,7 @@ const AmazonSearchProduct = async (req, res) => {
         });
 
         await browser.close();
+
         if (products.data.length > 0) {
             const product_index = findMatch(search_query, products.titles);
             if (product_index !== null) {
@@ -50,8 +62,27 @@ const AmazonSearchProduct = async (req, res) => {
         }
         return res.status(404).json({ error: 'No matching product found' });
     } catch (error) {
-        console.log("Get Amazon Search Product Error: ", error)
+        console.log("Get Amazon Search Product Error: ", error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
 
-module.exports = AmazonSearchProduct
+module.exports = AmazonSearchProduct;
+
+async function autoScroll(page) {
+    await page.evaluate(async () => {
+        await new Promise((resolve, reject) => {
+            var totalHeight = 0;
+            var distance = 100;
+            var timer = setInterval(() => {
+                var scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+                if (totalHeight >= scrollHeight) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
+        });
+    });
+}
