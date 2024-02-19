@@ -2,14 +2,13 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
+const { logStart, logEnd } = require('../utils/logger');
 puppeteer.use(StealthPlugin())
-
 
 const url = "https://www.ajio.com/s/offer-deals-03022021?query=%3Adiscount-desc&curated=true&curatedid=offer-deals-03022021&gridColumns=5&segmentIds=";
 
 const getAjioDealsScrapper = async () => {
-    console.log("Ajio Deals Scrap Started")
-    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Ajio Deals Scrapper Run\n`);
+    logStart("AJIO Deals Scrapper")
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
@@ -66,10 +65,9 @@ const getAjioDealsScrapper = async () => {
         return null;
 
     }));
-    allData = allData.concat(productsData.filter(item => item !== null));
+    const filteredData = allData.filter(item => item !== null);
     fs.writeFileSync("ajio.json", JSON.stringify(filteredData, null, 2));
-    fs.appendFileSync("log.txt", `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} : Ajio Deals Scrapper Run\n`);
-    console.log("Ajio Deals Scrap Ended")
+    logEnd("AJIO Deals Scrapper")
     await browser.close();
 };
 

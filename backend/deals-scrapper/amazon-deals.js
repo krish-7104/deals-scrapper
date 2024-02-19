@@ -2,10 +2,11 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
-const { AMAZON_SCRAPE_PAGE } = require('../utils/constants');
 const { logStart, logEnd } = require("../utils/logger.js")
 
 puppeteer.use(StealthPlugin())
+
+const AMAZON_SCRAPE_PAGE = 20
 
 const getAmazonDealsScrapper = async () => {
     const categories = JSON.parse(fs.readFileSync("amazon-category.json"));
