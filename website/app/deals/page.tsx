@@ -70,7 +70,7 @@ const Page = () => {
           <Search />
         </Button>
       </section>
-      <section className="min-h-[100vh] grid grid-cols-3 gap-6 my-6 w-[95%] mx-auto">
+      <section className="min-h-[100vh] flex justify-center items-center flex-col md:grid md:grid-cols-3 gap-6 my-6 w-[90%] md:w-[95%] mx-auto">
         {!loading &&
           deals?.map((deal) => {
             return (
