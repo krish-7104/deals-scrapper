@@ -25,7 +25,13 @@ myenv
 
 log.txt
 
-*.json
+amazon.json
+flipkart.json
+amazon-category.json
+flipkart-category.json
+myntra.json
+ajio.json
+meesho.json
 
 .next
 out
