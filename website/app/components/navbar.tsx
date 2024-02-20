@@ -3,11 +3,29 @@ import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
 import { TbDiscount2 } from "react-icons/tb";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import axios from "axios";
+import { API_LINK } from "@/utils/base-api";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [active, setActive] = useState("home");
   const router = useRouter();
   const pathname = usePathname();
+  const [login, setLogin] = useState(false);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    username: "",
+  });
   useEffect(() => {
     if (pathname === "/") {
       setActive("home");
@@ -15,22 +33,52 @@ const Navbar = () => {
       setActive("deals");
     } else if (pathname === "/track-product") {
       setActive("track-product");
-    } else if (pathname === "/register") {
-      setActive("register");
     }
   }, [pathname]);
+
+  const logoutHandler = () => {
+    localStorage.clear();
+    router.refresh();
+  };
+
+  useEffect(() => {
+    if (login && (pathname === "/login" || pathname === "/register")) {
+      router.push("/");
+    }
+  }, [login, pathname, router]);
 
   const handleButtonClick = (buttonName: string) => {
     setActive(buttonName);
     router.push(`/${buttonName === "home" ? "" : buttonName}`);
   };
 
+  const loginChecker = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const resp = await axios.post(`${API_LINK}/user/get-user`, {}, config);
+      if (resp.data.success) {
+        setLogin(true);
+        setLoginData(resp.data.data);
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    loginChecker();
+  }, []);
+
   return (
     <nav className="flex justify-between items-center px-4 py-3 shadow border-b">
-      <div className="flex justify-center items-center">
-        <TbDiscount2 className="text-primary animate-spin-slow text-3xl mr-2" />
-        <p className="font-semibold text-lg">Deals Scrapper</p>
-      </div>
+      <Link href={"/"}>
+        <div className="flex justify-center items-center cursor-pointer">
+          <TbDiscount2 className="text-primary animate-spin-slow text-3xl mr-2" />
+          <p className="font-semibold text-lg">Deals Scrapper</p>
+        </div>
+      </Link>
       <ul className="flex justify-center items-center gap-x-4">
         <Button
           onClick={() => handleButtonClick("home")}
@@ -51,13 +99,41 @@ const Navbar = () => {
         >
           Track Product
         </Button>
-        <Button
-          onClick={() => handleButtonClick("register")}
-          className={active === "register" ? "active ml-2" : "ml-2"}
-        >
-          Register
-        </Button>
-        <li className="mx-4 hidden">My Account</li>
+        {!login && (
+          <Button
+            onClick={() =>
+              handleButtonClick(pathname === "/login" ? "register" : "login")
+            }
+          >
+            {pathname === "/login" ? "Register" : "Login"}
+          </Button>
+        )}
+        {login && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="cursor-pointer select-none">
+                <AvatarFallback>
+                  {loginData?.username?.split(" ")[0].slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <Link href={"/my-trackers"}>
+                  <DropdownMenuItem>My Trackers</DropdownMenuItem>
+                </Link>
+                <a href="mailto:krishjotaniya71@gmail.com">
+                  <DropdownMenuItem>Feedback</DropdownMenuItem>
+                </a>
+                <DropdownMenuItem onClick={logoutHandler}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </ul>
     </nav>
   );
