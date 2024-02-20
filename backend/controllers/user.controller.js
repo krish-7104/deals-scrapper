@@ -117,6 +117,29 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.user = async (req, res) => {
+    try {
+        const bearerHeader = req.headers['authorization'];
+        if (typeof bearerHeader !== 'undefined') {
+            const bearerToken = bearerHeader.split(' ')[1];
+            jwt.verify(bearerToken, 'SECRET_LOGIN', (err, authData) => {
+                if (err) {
+                    res.status(401).json({ message: "Unauthorized User", success: false });
+                } else {
+                    res.json({
+                        success: true,
+                        data: authData,
+                        message: "User Authorized"
+                    });
+                }
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 // Forgot Password
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;

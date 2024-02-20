@@ -32,17 +32,23 @@ router.get('/log', async (req, res) => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Time Taken</th>
-                            <th>Action</th>
+                            <th>Active</th>
+                            <th>Started</th>
+                            <th>Ended</th>
                         </tr>
                     </thead>
                     <tbody>
         `;
+        for (let i = 0; i < logEntries.length - 1; i++) {
+            const parts = logEntries[i].split(" - ");
+            const startTime = parts[1].split(" : ")[0];
+            const endTime = parts[1].split(" : ")[1];
 
-        for (let log of logEntries) {
             html += `<tr>
-                        <td>${log.split(" : ")[0]}</td>
-                        <td>${log.split(" : ")[1]}</td>`
+                        <td>${parts[0]}</td>
+                        <td>${startTime}</td>
+                        <td>${endTime}</td>
+                    </tr>`;
         }
         html += `
        </tbody>
