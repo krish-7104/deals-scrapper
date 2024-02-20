@@ -4,8 +4,10 @@ const cron = require('node-cron');
 const amazonPriceScrape = require('../price-scrapper/amazon-price');
 const flipkartPriceScraper = require('../price-scrapper/flipkart-price');
 
-//   await comparePricesDaily();
-// });
+cron.schedule('0 9 * * *', async () => {
+  console.log('Running price comparison task at 9 a.m.');
+  await comparePricesDaily();
+});
 
 exports.priceToCompare = async (req, res) => {
   const { userPrice, productUrl, userEmail } = req.body;
