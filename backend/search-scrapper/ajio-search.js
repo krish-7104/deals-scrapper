@@ -35,6 +35,8 @@ const AjioSearchProduct = async (req, res) => {
         const products = await page.evaluate(() => {
             const data = [];
             const titles = [];
+            const processedUrls = new Set();
+
             document.querySelectorAll('.item.rilrtl-products-list__item.item').forEach(product => {
                 if (product) {
                     const title = product.querySelector('.nameCls')?.innerText.trim() + " (" + product.querySelector('.brand')?.innerText.trim() + ")";
@@ -43,10 +45,12 @@ const AjioSearchProduct = async (req, res) => {
                     const discount = product.querySelector('.discount')?.innerText.replace(/[^\d.]/g, '');
                     const link = 'https://www.ajio.com' + product.querySelector('a')?.getAttribute('href');
                     const image = product.querySelector('.rilrtl-lazy-img.rilrtl-lazy-img-loaded')?.getAttribute('src');
-                    data.push({
-                        title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image
-                    });
-                    titles.push(title)
+                    if (!processedUrls.has(link)) {
+                        data.push({
+                            title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image
+                        });
+                        titles.push(title)
+                    }
                 }
             });
             return { data, titles };
@@ -56,9 +60,11 @@ const AjioSearchProduct = async (req, res) => {
         if (products.data.length > 0) {
             const product_index = findMatch(search_query, products.titles);
             if (product_index !== null) {
+                const bestMatch = products.data[product_index];
+                const otherProducts = products.data.filter((_, index) => index !== product_index);
                 return res.json({
-                    best: products.data[product_index],
-                    data: products.data
+                    best: bestMatch,
+                    data: otherProducts
                 });
             }
         }

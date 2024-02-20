@@ -2,7 +2,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { API_LINK } from "../utils/base-api";
+import { API_LINK } from "../../utils/base-api";
 import DealCard from "../components/deal-card";
 import DealLoader from "../components/deal-loader";
 import { FaChevronUp } from "react-icons/fa";

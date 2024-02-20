@@ -16,18 +16,22 @@ const MyntraSearchProduct = async (req, res) => {
         const products = await page.evaluate(() => {
             const data = [];
             const titles = [];
+            const processedUrls = new Set();
+
             document.querySelectorAll('.product-base').forEach(product => {
                 if (product) {
                     const title = product.querySelector('.product-product')?.innerText.trim();
                     const discount_price = product.querySelector('.product-discountedPrice')?.innerText.replace("Rs. ", "").replace(/[^\d.]/g, '');
                     const original_price = product.querySelector('.product-strike')?.innerText.replace("Rs. ", "").replace(/[^\d.]/g, '');
                     const discount = product.querySelector('.product-discountPercentage')?.innerText.replace("Rs. ", "").replace(/[^\d.]/g, '');
-                    const link = 'https://www.myntra.com' + product.querySelector('a')?.getAttribute('href');
+                    const link = 'https://www.myntra.com/' + product.querySelector('a')?.getAttribute('href');
                     const image = product.querySelector('img')?.getAttribute('src');
-                    data.push({
-                        title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image
-                    });
-                    titles.push(title)
+                    if (!processedUrls.has(link)) {
+                        data.push({
+                            title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image
+                        });
+                        titles.push(title)
+                    }
                 }
             });
             return { data, titles };
@@ -37,9 +41,11 @@ const MyntraSearchProduct = async (req, res) => {
         if (products.data.length > 0) {
             const product_index = findMatch(search_query, products.titles);
             if (product_index !== null) {
+                const bestMatch = products.data[product_index];
+                const otherProducts = products.data.filter((_, index) => index !== product_index);
                 return res.json({
-                    best: products.data[product_index],
-                    data: products.data
+                    best: bestMatch,
+                    data: otherProducts
                 });
             }
         }
