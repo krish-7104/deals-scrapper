@@ -8,7 +8,7 @@ const { connectToMongo } = require("./database/db-connect.js")
 dotenv.config()
 
 const userRouter = require("./routes/user.route.js");
-const userSearchRouter=require("./routes/userSearch.router.js");
+const userSearchRouter = require("./routes/userSearch.router.js");
 const dealScrapperRouter = require("./routes/dealscrapper.router.js");
 const showDealsRouter = require("./routes/showdeals.router.js");
 const searchProductRouter = require("./routes/search-product.router.js")
@@ -37,36 +37,36 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
 app.use("/api/v1/search", searchProductRouter)
-app.use("/api/v1/userSearch",userSearchRouter)
+app.use("/api/v1/userSearch", userSearchRouter)
 
 app.use("", logRouter)
 // get all logs: http://localhost:4000/log
 
-cron.schedule('0 7 * * *', () => {
+cron.schedule('34 7 * * *', () => {
     getAmazonCategoryScrapper()
 });
 
-cron.schedule('2 7 * * *', () => {
+cron.schedule('36 7 * * *', () => {
     getAmazonDealsScrapper()
 });
 
-cron.schedule('4 7 * * *', () => {
+cron.schedule('38 7 * * *', () => {
     getFlipkartCategoryScrapper()
 });
 
-cron.schedule('6 7 * * *', () => {
+cron.schedule('40 7 * * *', () => {
     getFlipkartDealsScrapper()
 });
 
-cron.schedule('8 7 * * *', () => {
+cron.schedule('42 7 * * *', () => {
     getMyntraDealsScrapper()
 });
 
-cron.schedule('12 7 * * *', () => {
+cron.schedule('45 7 * * *', () => {
     getAjioDealsScrapper()
 });
 
-cron.schedule('15 7 * * *', () => {
+cron.schedule('40 47 7 * * *', () => {
     getMeeshoDealsScrapper()
 });
 

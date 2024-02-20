@@ -19,34 +19,49 @@ const getFlipkartDealsScrapper = async () => {
             await page.goto(categories[i]?.deal_link);
             const htmlContent = await page.content();
             const $ = cheerio.load(htmlContent);
-            const products = $(".s1Q9rs");
+            const products = $('._1AtVbE.col-12-12');
             const processedUrls = new Set();
-            const productsData = await Promise.all(products.map(async (index, element) => {
-                const product = $(element).closest('._1AtVbE.col-12-12');
-                const link = `https://www.flipkart.com${product.find(".s1Q9rs").attr("href")}`;
-                const image = product.find("._396cs4").attr("src");
-                const title = product.find(".s1Q9rs").text().trim();
-                const discountPrice = parseInt(product.find("._30jeq3").first().text().replace(/\D+/g, '')) || null;
-                const originalPrice = parseInt(product.find("._3I9_wc").first().text().trim().replace(/\D+/g, '')) || null;
-                const discount = parseInt(product.find("._3Ay6Sb").first().text().trim().replace(/\D+/g, '')) || null;
-                if (link && image && title && discountPrice && originalPrice && discount) {
-                    if (processedUrls.has(link)) {
-                        return null;
-                    } else {
-                        processedUrls.add(link);
-                        return {
-                            link,
-                            image,
-                            title,
-                            discount_price: discountPrice,
-                            original_price: originalPrice,
-                            discount
-                        };
+
+            products.each((index, element) => {
+                const product = $(element);
+                const childrens = product.find('._13oc-S > *');
+                if (childrens.length === 1) {
+                    const title = product.find('._4rR01T').text().trim();
+                    const discount_price = parseInt(product.find('._30jeq3._1_WHN1').text().trim().replace(/[^\d.]/g, ''));
+                    const original_price = parseInt(product.find('._3I9_wc._27UcVY').text().trim().replace(/[^\d.]/g, ''));
+                    const discount = parseInt(product.find('._3Ay6Sb').text().trim().replace(/[^\d.]/g, ''));
+                    const link = 'https://www.flipkart.com' + product.find('._1fQZEK').attr('href');
+                    const image = product.find('._396cs4').attr('src');
+
+                    if (title && discount_price && original_price && discount && link && image) {
+                        if (processedUrls.has(link)) {
+                            return;
+                        } else {
+                            processedUrls.add(link);
+                            allData.push({ title, discount_price, original_price, discount, link, image });
+                        }
                     }
+                } else if (childrens.length === 4) {
+                    childrens.each((childIndex, childElement) => {
+                        const child = $(childElement);
+                        const title = child.find('.s1Q9rs').text().trim();
+                        const discount_price = parseInt(child.find('._30jeq3').text().trim().replace(/[^\d.]/g, ''));
+                        const original_price = parseInt(child.find('._3I9_wc').text().trim().replace(/[^\d.]/g, ''));
+                        const discount = parseInt(child.find('._3Ay6Sb').text().trim().replace(/[^\d.]/g, ''));
+                        const link = 'https://www.flipkart.com' + child.find('.s1Q9rs').attr('href');
+                        const image = child.find('._396cs4').attr('src');
+
+                        if (title && discount_price && original_price && discount && link && image) {
+                            if (processedUrls.has(link)) {
+                                return;
+                            } else {
+                                processedUrls.add(link);
+                                allData.push({ title, discount_price, original_price, discount, link, image });
+                            }
+                        }
+                    });
                 }
-                return null;
-            }));
-            allData = allData.concat(productsData.filter(item => item !== null));
+            });
             await browser.close();
         }
         fs.writeFileSync("flipkart.json", JSON.stringify(allData, null, 2));

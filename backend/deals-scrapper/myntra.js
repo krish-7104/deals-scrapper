@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
 const fs = require("fs");
-const MYNTRA_SCRAPE_PAGE = 3
+const MYNTRA_SCRAPE_PAGE = 10
 const { logStart, logEnd } = require("../utils/logger.js")
 
 puppeteer.use(StealthPlugin())
