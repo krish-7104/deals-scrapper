@@ -26,7 +26,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
 
   return (
     <Link
-      className="bg-white border p-4 rounded-md flex cursor-pointer h-[160px]"
+      className="bg-white border p-4 rounded-md flex cursor-pointer h-[160px] group"
       href={link}
       target="_blank"
       rel="noreferrer"
@@ -34,7 +34,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
     >
       <Image
         src={image}
-        className="w-1/3 h-32 object-contain mr-4 py-2"
+        className="w-1/3 h-32 object-contain mr-4 py-2 group-hover:scale-105 transition-animate"
         height={200}
         width={200}
         alt=""
@@ -50,7 +50,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
           </div>
           {original_price && discount_price && (
             <span className="border-primary text-primary border-2 px-2 py-[2px] rounded-2xl text-sm font-medium ml-auto text-center flex justify-center items-center">
-              <TbDiscount2 className="text-lg mr-1" />
+              <TbDiscount2 className="text-lg mr-1 group-hover:animate-spin-slow" />
               {discount
                 ? discount
                 : (

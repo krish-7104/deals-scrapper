@@ -68,3 +68,15 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.transition-animate {
+  transition-property: all;
+  transition-timing-function: ease-linear;
+  transition-duration: 200ms;
+}
+
+.transition-animate:hover {
+  transition-property: all;
+  transition-timing-function: ease-linear;
+  transition-duration: 200ms;
+}
