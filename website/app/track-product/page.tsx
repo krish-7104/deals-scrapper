@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { API_LINK } from "@/utils/base-api";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/auth-context";
 const TrackProduct = () => {
   const router = useRouter();
   const [data, setData] = useState<{
@@ -19,6 +19,14 @@ const TrackProduct = () => {
     price: undefined,
     email: "",
   });
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      setData({ ...data, email: user.email ? user.email : "" });
+    }
+  }, [user]);
+
   const addTrackerHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

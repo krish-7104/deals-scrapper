@@ -1,26 +1,18 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { API_LINK } from "@/utils/base-api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/auth-context";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
 const MyTrackers = () => {
   const router = useRouter();
-  const [data, setData] = useState<{
-    productUrl: string;
-    email: string;
-    price: number | undefined;
-  }>({
-    productUrl: "",
-    price: undefined,
-    email: "",
-  });
+  // const [data, setData] = useState();
   const { user } = useAuth();
-  const addTrackerHandler = async (e: React.FormEvent) => {
+
+  const FetchTracker = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       toast.loading("Logging In...");
@@ -36,54 +28,31 @@ const MyTrackers = () => {
     }
   };
 
-  useEffect(() => {
-    if (!user) {
-      router.replace("/");
-    }
-  }, [router, user]);
+  const data = [
+    {
+      id: "728ed52f",
+      productUrl:
+        "https://www.flipkart.com/portronics-por-373-key2-mouse-combo-wireless-laptop-keyboard/p/itm5733b3f97bbf1?pid=ACCFZECVEJFT5BDS&lid=LSTACCFZECVEJFT5BDSIWTUK8&marketplace=FLIPKART&store=6bo%2Fai3%2F3oe&srno=b_1_37&otracker=browse&iid=en_SAcQesTRFP6clgQ0iREMl-GyfiM7knN7iP-GKza8y1bzHekymyjc9VE25rHOG3-1u1sMFW45NFPRNUGvssnLjxXEPQD91ylV5gURIWQMC0Q%3D&ssid=t9snnijls00000001708159631410",
+      email: "m@example.com",
+      price: 100,
+    },
+    {
+      id: "728ed52f",
+      productUrl:
+        "https://www.flipkart.com/portronics-por-373-key2-mouse-combo-wireless-laptop-keyboard/p/itm5733b3f97bbf1?pid=ACCFZECVEJFT5BDS&lid=LSTACCFZECVEJFT5BDSIWTUK8&marketplace=FLIPKART&store=6bo%2Fai3%2F3oe&srno=b_1_37&otracker=browse&iid=en_SAcQesTRFP6clgQ0iREMl-GyfiM7knN7iP-GKza8y1bzHekymyjc9VE25rHOG3-1u1sMFW45NFPRNUGvssnLjxXEPQD91ylV5gURIWQMC0Q%3D&ssid=t9snnijls00000001708159631410",
+      email: "m@example.com",
+      price: 100,
+    },
+  ];
 
   return (
-    <main className="h-[90vh] w-full flex justify-center items-center flex-col">
-      <p className="mb-5 text-center font-semibold text-2xl">
-        Add Tracker to a Product
+    <main className="h-[90vh] w-full flex justify-start items-center flex-col">
+      <p className="mb-6 mt-10 text-center font-semibold text-2xl">
+        Your Price Trackers
       </p>
-      <form className="w-[35%] border px-8 py-6 rounded-md">
-        <div className="mb-2 w-full">
-          <Label htmlFor="email">Email Address</Label>
-          <Input
-            type="email"
-            id="email"
-            value={data.email}
-            onChange={(e) => setData({ ...data, email: e.target.value })}
-          />
-        </div>
-        <div className="mb-2 w-full">
-          <Label htmlFor="link">Product Link</Label>
-          <Input
-            type="text"
-            id="link"
-            value={data.productUrl}
-            onChange={(e) => setData({ ...data, productUrl: e.target.value })}
-          />
-          <p className="text-xs mt-2 font-medium opacity-80">
-            Link should be of Amazon, Flipkart, Myntra, Ajio or Meesho
-          </p>
-        </div>
-        <div className="my-2 w-full">
-          <Label htmlFor="price">Desired Price</Label>
-          <Input
-            type="number"
-            id="price"
-            value={data.price}
-            onChange={(e) =>
-              setData({ ...data, price: parseInt(e.target.value) })
-            }
-          />
-        </div>
-        <Button className="block mt-6 mb-3 w-full" onClick={addTrackerHandler}>
-          Add Tracker
-        </Button>
-      </form>
+      <section className="w-[70%]">
+        <DataTable columns={columns} data={data} />
+      </section>
     </main>
   );
 };

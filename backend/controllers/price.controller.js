@@ -10,9 +10,9 @@ cron.schedule('0 9 * * *', async () => {
 });
 
 exports.priceToCompare = async (req, res) => {
-  const { userPrice, productUrl, userEmail } = req.body;
+  const { price, productUrl, email } = req.body;
   try {
-    await saveUserData(userPrice, productUrl, userEmail);
+    await saveUserData(price, productUrl, email);
     res.send('Price comparison initiated. You will receive an email notification if the price is lower than the user-entered price.');
   } catch (error) {
     console.error('Error saving user data:', error);
@@ -20,9 +20,9 @@ exports.priceToCompare = async (req, res) => {
   }
 };
 
-async function saveUserData(userPrice, productUrl, userEmail) {
+async function saveUserData(price, productUrl, email) {
   try {
-    await priceUser.create({ price: userPrice, productUrl, email: userEmail });
+    await priceUser.create({ price, productUrl, email });
   } catch (error) {
     console.error('Error saving user data to database:', error);
     throw error;
@@ -34,17 +34,17 @@ async function comparePricesDaily() {
     const allUserData = await priceUser.find();
 
     for (const userData of allUserData) {
-      const { price: userPrice, productUrl, email: userEmail } = userData;
+      const { price, productUrl, email } = userData;
 
       if (productUrl.includes('amazon')) {
         const amazonPrice = await amazonPriceScrape(productUrl);
-        if (amazonPrice < userPrice) {
-          await priceMail(userEmail, productUrl);
+        if (amazonPrice < price) {
+          await priceMail(email, productUrl);
         }
       } else if (productUrl.includes('flipkart')) {
         const flipkartPrice = await flipkartPriceScraper(productUrl);
-        if (flipkartPrice < userPrice) {
-          await priceMail(userEmail, productUrl);
+        if (flipkartPrice < price) {
+          await priceMail(email, productUrl);
         }
       }
     }
