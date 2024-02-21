@@ -16,16 +16,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "../context/auth-context";
 
 const Navbar = () => {
   const [active, setActive] = useState("home");
   const router = useRouter();
   const pathname = usePathname();
-  const [login, setLogin] = useState(false);
-  const [loginData, setLoginData] = useState({
-    email: "",
-    username: "",
-  });
+  const { user, login, logout } = useAuth();
+
   useEffect(() => {
     if (pathname === "/") {
       setActive("home");
@@ -38,37 +36,42 @@ const Navbar = () => {
 
   const logoutHandler = () => {
     localStorage.clear();
-    router.refresh();
+    logout();
   };
-
-  useEffect(() => {
-    if (login && (pathname === "/login" || pathname === "/register")) {
-      router.push("/");
-    }
-  }, [login, pathname, router]);
 
   const handleButtonClick = (buttonName: string) => {
     setActive(buttonName);
     router.push(`/${buttonName === "home" ? "" : buttonName}`);
   };
 
-  const loginChecker = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const resp = await axios.post(`${API_LINK}/user/get-user`, {}, config);
-      if (resp.data.success) {
-        setLogin(true);
-        setLoginData(resp.data.data);
-      }
-    } catch (error) {}
-  };
   useEffect(() => {
-    loginChecker();
+    const checkUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const config = {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          };
+          const resp = await axios.post(
+            `${API_LINK}/user/get-user`,
+            {},
+            config
+          );
+          if (resp.data.success) {
+            login(
+              resp.data.data._id,
+              resp.data.data.email,
+              resp.data.data.username
+            );
+          }
+          console.log(resp.data.data);
+        }
+      } catch (error) {}
+    };
+
+    checkUser();
   }, []);
 
   return (
@@ -99,7 +102,7 @@ const Navbar = () => {
         >
           Track Product
         </Button>
-        {!login && (
+        {!user && (
           <Button
             onClick={() =>
               handleButtonClick(pathname === "/login" ? "register" : "login")
@@ -108,12 +111,12 @@ const Navbar = () => {
             {pathname === "/login" ? "Register" : "Login"}
           </Button>
         )}
-        {login && (
+        {user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer select-none">
                 <AvatarFallback>
-                  {loginData?.username?.split(" ")[0].slice(0, 2)}
+                  {user?.username?.split(" ")[0].slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>

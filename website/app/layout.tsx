@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/navbar";
 import { Toaster } from "react-hot-toast";
 import NextTopLoader from "nextjs-toploader";
+import { AuthProvider } from "./context/auth-context";
 
 const inter = Poppins({
   subsets: ["latin"],
@@ -23,10 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        <NextTopLoader color="#e11d48" />
-        {children}
-        <Toaster position="bottom-center" />
+        <AuthProvider>
+          <Navbar />
+          <NextTopLoader color="#e11d48" />
+          {children}
+          <Toaster position="bottom-center" />
+        </AuthProvider>
       </body>
     </html>
   );

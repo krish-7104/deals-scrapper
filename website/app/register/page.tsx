@@ -6,15 +6,25 @@ import { API_LINK } from "@/utils/base-api";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/auth-context";
+
 const Register = () => {
+  const { user } = useAuth();
   const router = useRouter();
   const [data, setData] = useState({
     name: "",
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/");
+    }
+  }, [router, user]);
+
   const registerHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -33,6 +43,7 @@ const Register = () => {
       }
     }
   };
+
   return (
     <main className="h-[90vh] w-full flex justify-center items-center flex-col">
       <p className="mb-5 text-center font-semibold text-2xl">
