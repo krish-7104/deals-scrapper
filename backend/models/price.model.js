@@ -7,6 +7,6 @@ const priceSchema = new Schema({
     productUrl: String
 }, { timestamps: true })
 
-const priceUser = mongoose.model('priceUser', priceSchema);
+const priceUser = mongoose.model('price tracker', priceSchema);
 
 module.exports = priceUser;
