@@ -63,7 +63,7 @@ const Navbar = () => {
             login(
               resp.data.data._id,
               resp.data.data.email,
-              resp.data.data.username
+              resp.data.data.name
             );
           }
           console.log(resp.data.data);
@@ -72,7 +72,7 @@ const Navbar = () => {
     };
 
     checkUser();
-  }, []);
+  }, [login]);
 
   return (
     <nav className="flex justify-between items-center px-4 py-3 shadow border-b">
@@ -116,7 +116,7 @@ const Navbar = () => {
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer select-none">
                 <AvatarFallback>
-                  {user?.username?.split(" ")[0].slice(0, 2)}
+                  {user?.name?.split(" ")[0].slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
