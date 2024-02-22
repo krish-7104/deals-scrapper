@@ -20,6 +20,21 @@ exports.priceToCompare = async (req, res) => {
   }
 };
 
+exports.userTracker=async (req, res) => {
+  const userEmail = req.params.email;
+  try {
+    const userTrackers = await priceUser.find({ email: userEmail });
+
+    if (userTrackers.length === 0) {
+      return res.status(404).json({ message: 'No product trackers found for the provided email.' });
+    }
+    return res.status(200).json(userTrackers);
+  } catch (error) {
+    console.error('Error retrieving product trackers:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 async function saveUserData(price, productUrl, email) {
   try {
     await priceUser.create({ price, productUrl, email });
