@@ -35,6 +35,7 @@ const getAmazonDealsScrapper = async () => {
                         .first()
                         .text().trim().replace(/[^\d.]/g, '')),
                     discount: parseInt(product.find(".a-size-medium.a-color-price.octopus-widget-saving-percentage").text().replace(/[^\d.]/g, '')),
+                    reviews: parseFloat(product.find(".a-icon-alt").text().split(" out")[0]),
                 };
             }));
             allData.push(productsData)
