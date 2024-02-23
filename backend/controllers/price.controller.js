@@ -13,14 +13,14 @@ exports.priceToCompare = async (req, res) => {
   const { price, productUrl, email } = req.body;
   try {
     await saveUserData(price, productUrl, email);
-    res.send('Price comparison initiated. You will receive an email notification if the price is lower than the user-entered price.');
+    return res.status(200).json({ message: 'Price Tracker Activated' });
   } catch (error) {
     console.error('Error saving user data:', error);
     res.status(500).send('Error saving user data.');
   }
 };
 
-exports.userTracker=async (req, res) => {
+exports.userTracker = async (req, res) => {
   const userEmail = req.params.email;
   try {
     const userTrackers = await priceUser.find({ email: userEmail });
@@ -28,12 +28,23 @@ exports.userTracker=async (req, res) => {
     if (userTrackers.length === 0) {
       return res.status(404).json({ message: 'No product trackers found for the provided email.' });
     }
-    return res.status(200).json(userTrackers);
+    return res.status(200).json({ message: 'Price Trackers Found', userTrackers });
   } catch (error) {
     console.error('Error retrieving product trackers:', error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+exports.deleteTracker = async (req, res) => {
+  const id = req.params.id;
+  try {
+    await priceUser.findOneAndDelete(id)
+    return res.status(200).json({ message: 'Price Trackers Deleted' });
+  } catch (error) {
+    console.error('Error deleting tracker:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
 
 async function saveUserData(price, productUrl, email) {
   try {

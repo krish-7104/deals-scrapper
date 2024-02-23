@@ -20,6 +20,7 @@ const getFlipkartCategoryScrapper = require("./deals-scrapper/flipkart-category.
 const getFlipkartDealsScrapper = require("./deals-scrapper/flipkart-deals.js");
 const getAjioDealsScrapper = require("./deals-scrapper/ajio.js");
 const getMeeshoDealsScrapper = require("./deals-scrapper/meesho.js");
+const convertDataToCSV = require("./utils/json-to-csv.js");
 
 const app = express()
 connectToMongo()
@@ -43,35 +44,50 @@ app.use("/api/v1/show", showDealsRouter)
 app.use("/api/v1/search", searchProductRouter)
 app.use("/api/v1/userSearch", userSearchRouter)
 
+app.get('/convert', async (req, res) => {
+    try {
+        await convertDataToCSV();
+        res.download("output.csv");
+    } catch (error) {
+        console.error('Error serving CSV file:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 app.use("", logRouter)
 // get all logs: http://localhost:4000/log
 
-cron.schedule('34 7 * * *', () => {
+cron.schedule('0 7 * * *', () => {
     getAmazonCategoryScrapper()
 });
 
-cron.schedule('36 7 * * *', () => {
+cron.schedule('5 7 * * *', () => {
     getAmazonDealsScrapper()
 });
 
-cron.schedule('38 7 * * *', () => {
+cron.schedule('10 7 * * *', () => {
     getFlipkartCategoryScrapper()
 });
 
-cron.schedule('40 7 * * *', () => {
+cron.schedule('15 7 * * *', () => {
     getFlipkartDealsScrapper()
 });
 
-cron.schedule('42 7 * * *', () => {
+cron.schedule('20 7 * * *', () => {
     getMyntraDealsScrapper()
 });
 
-cron.schedule('45 7 * * *', () => {
+cron.schedule('25 7 * * *', () => {
     getAjioDealsScrapper()
 });
 
-cron.schedule('40 47 7 * * *', () => {
+cron.schedule('30 7 * * *', () => {
     getMeeshoDealsScrapper()
+});
+
+cron.schedule('35 7 * * *', () => {
+    convertDataToCSV()
 });
 
 

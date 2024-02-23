@@ -2,6 +2,16 @@ const express = require('express');
 const router = express.Router();
 const fs = require("fs");
 
+router.get("/reset-log", async (req, res) => {
+    try {
+        fs.writeFileSync("log.txt", "")
+        res.send("Log File Reset");
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error);
+
+    }
+})
 
 router.get('/log', async (req, res) => {
     try {
@@ -40,9 +50,9 @@ router.get('/log', async (req, res) => {
                     <tbody>
         `;
         for (let i = 0; i < logEntries.length - 1; i++) {
-            const parts = logEntries[i].split(" - ");
-            const startTime = parts[1].split(" : ")[0];
-            const endTime = parts[1].split(" : ")[1];
+            const parts = logEntries[i]?.split(" - ");
+            const startTime = parts[1]?.split(" : ")[0];
+            const endTime = parts[1]?.split(" : ")[1];
 
             html += `<tr>
                         <td>${parts[0]}</td>
