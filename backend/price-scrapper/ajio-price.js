@@ -6,33 +6,32 @@ puppeteer.use(StealthPlugin())
 
 const product = { name: "", discount_price: "", original_price: "", discount: "", image: "" };
 
-const myntraPriceScrapper = async (url) => {
+const AjioPriceScrapper = async (url) => {
     try {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: 'domcontentloaded' });
         const htmlContent = await page.content();
         const $ = cheerio.load(htmlContent);
-        product.name = $(".pdp-name").text().trim() + `(${$(".pdp-title").text().trim()})`;
+        product.name = `(${$(".prod-name").text().trim()})`;
         product.discount = parseInt($
-            (".pdp-discount")
+            (".prod-discnt")
             .text().replace(/[^\d.]/g, ''))
         product.discount_price = parseInt($ 
-            (".pdp-price")
+            (".prod-sp")
             .text().replace(/[^\d.]/g, ''))
         product.original_price = parseInt($
-            (".pdp-mrp s")
+            (".prod-cp")
             .text().trim().replace(/[^\d.]/g, ''))
-        const backgroundImageStyle = $(".image-grid-image").attr("style");
-        product.image = backgroundImageStyle ? backgroundImageStyle.match(/url\("(.+)"\)/)[1] : "";
-     
+        product.image = $(".img-alignment")
+            .attr("src")
         return product
     } catch (error) {
-        console.log("Myntra Price Scrapper Error: ", error)
+        console.log("Ajio Price Scrapper Error: ", error)
         return null
     }
 }
 
 
 
-module.exports = myntraPriceScrapper
+module.exports = AjioPriceScrapper
