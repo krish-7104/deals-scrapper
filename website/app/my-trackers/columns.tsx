@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
+import { API_LINK } from "@/utils/base-api";
 import { ColumnDef } from "@tanstack/react-table";
+import axios from "axios";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import { AiOutlineDelete } from "react-icons/ai";
 export type Trackers = {
   productUrl: string;
   price: number;
+  _id: string;
 };
 
 const getCompanyName = (link: string) => {
@@ -15,14 +19,22 @@ const getCompanyName = (link: string) => {
   if (link.includes("meesho")) return "/logos/meesho.png";
 };
 
-const deleteTrackerHandler = () => {
+const deleteTrackerHandler = async (id: string) => {
   try {
-  } catch (error) {}
+    toast.loading("Deleting Trackers...");
+    const resp = await axios.delete(`${API_LINK}/user/deleteTracker/${id}`);
+    toast.dismiss();
+    toast.success("Tracker Deleted!");
+  } catch (error) {
+    toast.dismiss();
+    console.log("Fetch Tracker Error", error);
+    toast.error("Something Went Wrong");
+  }
 };
 
 export const columns: ColumnDef<Trackers>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: () => <p className="text-center">Id</p>,
     cell: ({ row }) => {
       return <p className="text-center">{row.index + 1}</p>;
@@ -72,7 +84,11 @@ export const columns: ColumnDef<Trackers>[] = [
     cell: ({ row }) => {
       return (
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button size={"icon"} variant={"destructive"}>
+          <Button
+            size={"icon"}
+            variant={"destructive"}
+            onClick={() => deleteTrackerHandler(row.getValue("_id"))}
+          >
             <AiOutlineDelete className="text-lg" />
           </Button>
         </div>

@@ -12,23 +12,21 @@ const MyTrackers = () => {
   const [data, setData] = useState();
   const { user } = useAuth();
 
-  const FetchTracker = async () => {
-    try {
-      toast.loading("Loading Trackers...");
-      const resp = await axios.get(
-        `${API_LINK}/user/userTracker/${user?.email}`
-      );
-      setData(resp.data);
-      toast.dismiss();
-      toast.success(resp.data.message);
-    } catch (error) {
-      toast.dismiss();
-      console.log("Fetch Tracker Error", error);
-      toast.error("Something Went Wrong");
-    }
-  };
-
   useEffect(() => {
+    const FetchTracker = async () => {
+      try {
+        toast.loading("Loading Trackers...");
+        const resp = await axios.get(
+          `${API_LINK}/user/userTracker/${user?.email}`
+        );
+        setData(resp.data.userTrackers);
+        toast.dismiss();
+      } catch (error) {
+        toast.dismiss();
+        console.log("Fetch Tracker Error", error);
+        toast.error("Something Went Wrong");
+      }
+    };
     FetchTracker();
   }, [user]);
 

@@ -81,7 +81,7 @@ const Navbar = () => {
           <p className="font-semibold text-lg">Deals Scrapper</p>
         </div>
       </Link>
-      <ul className="flex justify-center items-center gap-x-4">
+      <ul className="md:flex justify-center items-center gap-x-4 hidden">
         <Button
           onClick={() => handleButtonClick("home")}
           variant={active === "home" ? "outline" : "ghost"}

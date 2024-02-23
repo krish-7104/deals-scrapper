@@ -1,8 +1,22 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { TbDiscount2 } from "react-icons/tb";
 import DealCard from "../deal-card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useAuth } from "@/app/context/auth-context";
+import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
+import { API_LINK } from "@/utils/base-api";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface Deal {
   title: string;
@@ -20,6 +34,31 @@ interface DealDataProp {
 }
 
 const CompareView = ({ data }: { data: DealDataProp }) => {
+  const { user } = useAuth();
+  const router = useRouter();
+  const [close, setClose] = useState(true);
+  const [tracker, setTracker] = useState<{
+    email: string | undefined;
+    price: undefined | number;
+  }>({ email: user?.email ? user?.email : "", price: undefined });
+
+  const AddPriceTracker = async () => {
+    try {
+      toast.loading("Adding Tracker...");
+      const resp = await axios.post(`${API_LINK}/user/priceToCompare`, {
+        productUrl: data.best.link,
+        ...tracker,
+      });
+      toast.dismiss();
+      toast.success(resp.data.message);
+      setClose(true);
+    } catch (error) {
+      toast.dismiss();
+      console.log("Tracker Adding Error", error);
+      toast.error("Something Went Wrong");
+    }
+  };
+
   return (
     <section className="mb-10 w-[85%] mx-auto">
       <p className="font-semibold text-lg mb-1">Best Match Result</p>
@@ -67,9 +106,56 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
           </p>
         </div>
         <div className="mt-5 w-full flex justify-evenly items-center gap-x-4">
-          <Button size={"sm"} className="w-full">
-            Add Price Tracker
-          </Button>
+          <Dialog open={!close}>
+            <DialogTrigger>
+              <Button
+                size={"sm"}
+                className="w-full"
+                onClick={() => setClose(false)}
+              >
+                Add Price Tracker
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="text-xl">
+                  Adding Price Tracker
+                </DialogTitle>
+                <DialogDescription>
+                  You will get email notification once price drops below your
+                  desired price.
+                </DialogDescription>
+              </DialogHeader>
+              <div>
+                <Input
+                  className="mb-3"
+                  placeholder="Enter Email"
+                  value={tracker.email}
+                  type="email"
+                  onChange={(e) =>
+                    setTracker({ ...tracker, email: e.target.value })
+                  }
+                />
+                <Input
+                  placeholder="Enter Desired Price"
+                  value={tracker.price}
+                  type="number"
+                  onChange={(e) =>
+                    setTracker({
+                      ...tracker,
+                      price: parseInt(e.target.value),
+                    })
+                  }
+                />
+                <Button
+                  className="mt-5 ml-auto block"
+                  onClick={AddPriceTracker}
+                >
+                  Add Tracker
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
           <Button
             size={"sm"}
             className="w-full bg-black hover:bg-black/90"
