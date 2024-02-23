@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
+import { AiOutlineDelete } from "react-icons/ai";
 export type Trackers = {
-  id: string;
   productUrl: string;
   price: number;
 };
@@ -15,12 +15,17 @@ const getCompanyName = (link: string) => {
   if (link.includes("meesho")) return "/logos/meesho.png";
 };
 
+const deleteTrackerHandler = () => {
+  try {
+  } catch (error) {}
+};
+
 export const columns: ColumnDef<Trackers>[] = [
   {
     accessorKey: "id",
     header: () => <p className="text-center">Id</p>,
     cell: ({ row }) => {
-      return <p className="text-center">{row.getValue("id")}</p>;
+      return <p className="text-center">{row.index + 1}</p>;
     },
   },
   {
@@ -56,6 +61,19 @@ export const columns: ColumnDef<Trackers>[] = [
             variant={"secondary"}
           >
             View Product
+          </Button>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "delete",
+    header: () => <p className="text-center"></p>,
+    cell: ({ row }) => {
+      return (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button size={"icon"} variant={"destructive"}>
+            <AiOutlineDelete className="text-lg" />
           </Button>
         </div>
       );

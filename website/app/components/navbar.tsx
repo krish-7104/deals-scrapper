@@ -66,13 +66,12 @@ const Navbar = () => {
               resp.data.data.name
             );
           }
-          console.log(resp.data.data);
         }
       } catch (error) {}
     };
 
     checkUser();
-  }, [login]);
+  }, []);
 
   return (
     <nav className="flex justify-between items-center px-4 py-3 shadow border-b">

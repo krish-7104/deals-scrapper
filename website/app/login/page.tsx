@@ -33,6 +33,7 @@ const Login = () => {
       toast.success(resp.data.message);
       localStorage.setItem("token", resp.data.token);
       checkUser(resp.data.token);
+      router.replace("/");
     } catch (error) {
       toast.dismiss();
       console.log("Login Error", error);
@@ -50,11 +51,7 @@ const Login = () => {
         };
         const resp = await axios.post(`${API_LINK}/user/get-user`, {}, config);
         if (resp.data.success) {
-          login(
-            resp.data.data._id,
-            resp.data.data.email,
-            resp.data.data.username
-          );
+          login(resp.data.data._id, resp.data.data.email, resp.data.data.name);
           router.replace("/");
         }
         console.log(resp.data.data);
