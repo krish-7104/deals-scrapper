@@ -33,6 +33,10 @@ if (process.env.NODE_ENV === 'DEVELOPMENT') {
     app.use(morgan(':method :url :status :response-time ms'));
 }
 
+app.get("/", (req, res) => {
+    res.send("Hi I Am Live 🚀")
+})
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)

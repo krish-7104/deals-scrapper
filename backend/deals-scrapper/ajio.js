@@ -17,7 +17,7 @@ const getAjioDealsScrapper = async () => {
         await page.evaluate(async () => {
             await new Promise((resolve, reject) => {
                 var totalHeight = 0;
-                var distance = 50;
+                var distance = 100;
                 var timer = setInterval(() => {
                     var scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
@@ -47,6 +47,7 @@ const getAjioDealsScrapper = async () => {
         const original_price = parseInt(product.find(".orginal-price").first().text().replace(/[^\d.]/g, ''))
         const image = product.find(".imgHolder img").attr("src")
         const discount = parseInt(product.find(".discount").first().text().trim().replace(/[^\d.]/g, ''))
+        const reviews = parseFloat(product.find("._1N0OO").first().text())
         if (image) {
             if (processedUrls.has(link)) {
                 return null;
@@ -58,7 +59,7 @@ const getAjioDealsScrapper = async () => {
                     title,
                     discount_price,
                     original_price,
-                    discount
+                    discount, reviews
                 };
             }
         }
