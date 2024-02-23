@@ -4,15 +4,15 @@ const cron = require('node-cron');
 const amazonPriceScrape = require('../price-scrapper/amazon-price');
 const flipkartPriceScraper = require('../price-scrapper/flipkart-price');
 
-cron.schedule('0 9 * * *', async () => {
-  console.log('Running price comparison task at 9 a.m.');
-  await comparePricesDaily();
-});
+// cron.schedule('0 9 * * *', async () => {
+//   console.log('Running price comparison task at 9 a.m.');
+//   await comparePricesDaily();
+// });
 
 exports.priceToCompare = async (req, res) => {
-  const { userPrice, productUrl, userEmail } = req.body;
+  const { price, productUrl, email } = req.body;
   try {
-    await saveUserData(userPrice, productUrl, userEmail);
+    await saveUserData(price, productUrl, email);
     res.send('Price comparison initiated. You will receive an email notification if the price is lower than the user-entered price.');
   } catch (error) {
     console.error('Error saving user data:', error);
@@ -20,9 +20,24 @@ exports.priceToCompare = async (req, res) => {
   }
 };
 
-async function saveUserData(userPrice, productUrl, userEmail) {
+exports.userTracker=async (req, res) => {
+  const userEmail = req.params.email;
   try {
-    await priceUser.create({ price: userPrice, productUrl, email: userEmail });
+    const userTrackers = await priceUser.find({ email: userEmail });
+
+    if (userTrackers.length === 0) {
+      return res.status(404).json({ message: 'No product trackers found for the provided email.' });
+    }
+    return res.status(200).json(userTrackers);
+  } catch (error) {
+    console.error('Error retrieving product trackers:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+async function saveUserData(price, productUrl, email) {
+  try {
+    await priceUser.create({ price, productUrl, email });
   } catch (error) {
     console.error('Error saving user data to database:', error);
     throw error;
@@ -34,17 +49,17 @@ async function comparePricesDaily() {
     const allUserData = await priceUser.find();
 
     for (const userData of allUserData) {
-      const { price: userPrice, productUrl, email: userEmail } = userData;
+      const { price, productUrl, email } = userData;
 
       if (productUrl.includes('amazon')) {
         const amazonPrice = await amazonPriceScrape(productUrl);
-        if (amazonPrice < userPrice) {
-          await priceMail(userEmail, productUrl);
+        if (amazonPrice < price) {
+          await priceMail(email, productUrl);
         }
       } else if (productUrl.includes('flipkart')) {
         const flipkartPrice = await flipkartPriceScraper(productUrl);
-        if (flipkartPrice < userPrice) {
-          await priceMail(userEmail, productUrl);
+        if (flipkartPrice < price) {
+          await priceMail(email, productUrl);
         }
       }
     }

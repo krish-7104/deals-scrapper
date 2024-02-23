@@ -10,8 +10,8 @@ const searchSchema = new Schema({
     type: [String],
     default: []
   }
-});
+}, { timestamps: true });
 
-const searchUser = mongoose.model('searchUser', searchSchema);
+const searchUser = mongoose.model('user search', searchSchema);
 
 module.exports = searchUser;

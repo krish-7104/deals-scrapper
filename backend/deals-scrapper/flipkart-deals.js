@@ -32,13 +32,14 @@ const getFlipkartDealsScrapper = async () => {
                     const discount = parseInt(product.find('._3Ay6Sb').text().trim().replace(/[^\d.]/g, ''));
                     const link = 'https://www.flipkart.com' + product.find('._1fQZEK').attr('href');
                     const image = product.find('._396cs4').attr('src');
+                    const reviews = parseFloat(product.find('._3LWZlK').text().slice(0, 4))
 
                     if (title && discount_price && original_price && discount && link && image) {
                         if (processedUrls.has(link)) {
                             return;
                         } else {
                             processedUrls.add(link);
-                            allData.push({ title, discount_price, original_price, discount, link, image });
+                            allData.push({ title, discount_price, original_price, discount, link, image, reviews });
                         }
                     }
                 } else if (childrens.length === 4) {
@@ -50,13 +51,14 @@ const getFlipkartDealsScrapper = async () => {
                         const discount = parseInt(child.find('._3Ay6Sb').text().trim().replace(/[^\d.]/g, ''));
                         const link = 'https://www.flipkart.com' + child.find('.s1Q9rs').attr('href');
                         const image = child.find('._396cs4').attr('src');
+                        const reviews = parseFloat(product.find('._3LWZlK').text().slice(0, 4))
 
                         if (title && discount_price && original_price && discount && link && image) {
                             if (processedUrls.has(link)) {
                                 return;
                             } else {
                                 processedUrls.add(link);
-                                allData.push({ title, discount_price, original_price, discount, link, image });
+                                allData.push({ title, discount_price, original_price, discount, link, image, reviews });
                             }
                         }
                     });
