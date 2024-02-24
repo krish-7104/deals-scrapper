@@ -17,7 +17,7 @@ const AjioPriceScrapper = async (url) => {
         product.discount = parseInt($
             (".prod-discnt")
             .text().replace(/[^\d.]/g, ''))
-        product.discount_price = parseInt($ 
+        product.discount_price = parseInt($
             (".prod-sp")
             .text().replace(/[^\d.]/g, ''))
         product.original_price = parseInt($

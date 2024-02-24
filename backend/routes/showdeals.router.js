@@ -7,12 +7,37 @@ const ITEMS_PER_PAGE = 102;
 const getDealsHandler = async (req, res) => {
     try {
         const { company, search, page } = req.query;
-        const amazonData = JSON.parse(fs.readFileSync("./amazon.json"));
-        const flipkartData = JSON.parse(fs.readFileSync("./flipkart.json"));
-        const myntraData = JSON.parse(fs.readFileSync("./myntra.json"));
-        const ajioData = JSON.parse(fs.readFileSync("./ajio.json"));
-        const meeshoData = JSON.parse(fs.readFileSync("./meesho.json"));
-        let dealsData = [...amazonData, ...flipkartData, ...myntraData, ...ajioData, ...meeshoData];
+        let dealsData = [];
+        try {
+            const amazonData = JSON.parse(fs.readFileSync("./amazon.json"));
+            dealsData.push(...amazonData);
+        } catch (error) {
+            console.error("Error reading Amazon data:", error);
+        }
+        try {
+            const flipkartData = JSON.parse(fs.readFileSync("./flipkart.json"));
+            dealsData.push(...flipkartData);
+        } catch (error) {
+            console.error("Error reading Flipkart data:", error);
+        }
+        try {
+            const myntraData = JSON.parse(fs.readFileSync("./myntra.json"));
+            dealsData.push(...myntraData);
+        } catch (error) {
+            console.error("Error reading Myntra data:", error);
+        }
+        try {
+            const ajioData = JSON.parse(fs.readFileSync("./ajio.json"));
+            dealsData.push(...ajioData);
+        } catch (error) {
+            console.error("Error reading AJIO data:", error);
+        }
+        try {
+            const meeshoData = JSON.parse(fs.readFileSync("./meesho.json"));
+            dealsData.push(...meeshoData);
+        } catch (error) {
+            console.error("Error reading Meesho data:", error);
+        }
         const uniqueDealsSet = new Set();
         dealsData.forEach(deal => uniqueDealsSet.add(deal.link));
         dealsData = Array.from(uniqueDealsSet).map(link => dealsData.find(deal => deal.link === link));
