@@ -4,12 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { API_LINK } from "@/utils/base-api";
 import axios from "axios";
-import { useRouter, useParams, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/auth-context";
 const TrackProduct = () => {
-  const router = usePathname();
+  const router = useRouter();
   const [data, setData] = useState<{
     productUrl: string;
     email: string;
@@ -34,6 +34,7 @@ const TrackProduct = () => {
       const resp = await axios.post(`${API_LINK}/user/priceToCompare`, data);
       toast.dismiss();
       toast.success(resp.data.message);
+      router.push("/my-trackers");
     } catch (error) {
       toast.dismiss();
       console.log("Tracker Adding Error", error);

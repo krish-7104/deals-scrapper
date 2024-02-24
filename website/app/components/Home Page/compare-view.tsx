@@ -36,26 +36,30 @@ interface DealDataProp {
 const CompareView = ({ data }: { data: DealDataProp }) => {
   const { user } = useAuth();
   const router = useRouter();
-  const [close, setClose] = useState(true);
   const [tracker, setTracker] = useState<{
     email: string | undefined;
     price: undefined | number;
   }>({ email: user?.email ? user?.email : "", price: undefined });
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const AddPriceTracker = async () => {
-    try {
-      toast.loading("Adding Tracker...");
-      const resp = await axios.post(`${API_LINK}/user/priceToCompare`, {
-        productUrl: data.best.link,
-        ...tracker,
-      });
-      toast.dismiss();
-      toast.success(resp.data.message);
-      setClose(true);
-    } catch (error) {
-      toast.dismiss();
-      console.log("Tracker Adding Error", error);
-      toast.error("Something Went Wrong");
+    if (tracker.price) {
+      try {
+        toast.loading("Adding Tracker...");
+        const resp = await axios.post(`${API_LINK}/user/priceToCompare`, {
+          productUrl: data.best.link,
+          ...tracker,
+        });
+        toast.dismiss();
+        toast.success(resp.data.message);
+        setDialogOpen(false);
+      } catch (error) {
+        toast.dismiss();
+        console.log("Tracker Adding Error", error);
+        toast.error("Something Went Wrong");
+      }
+    } else {
+      toast.error("Please Enter Desired Price");
     }
   };
 
@@ -106,13 +110,12 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
           </p>
         </div>
         <div className="mt-5 w-full flex justify-evenly items-center gap-x-4">
-          <Dialog open={!close}>
-            <DialogTrigger>
-              <Button
-                size={"sm"}
-                className="w-full"
-                onClick={() => setClose(false)}
-              >
+          <Dialog
+            open={dialogOpen}
+            onOpenChange={() => setDialogOpen(!dialogOpen)}
+          >
+            <DialogTrigger onClick={() => setDialogOpen(true)}>
+              <Button size={"sm"} className="w-full">
                 Add Price Tracker
               </Button>
             </DialogTrigger>
@@ -124,6 +127,9 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
                 <DialogDescription>
                   You will get email notification once price drops below your
                   desired price.
+                </DialogDescription>
+                <DialogDescription className="text-black font-medium">
+                  Current Price: ₹{data.best.discount_price}
                 </DialogDescription>
               </DialogHeader>
               <div>
@@ -140,6 +146,7 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
                   placeholder="Enter Desired Price"
                   value={tracker.price}
                   type="number"
+                  autoFocus={tracker?.email ? true : false}
                   onChange={(e) =>
                     setTracker({
                       ...tracker,

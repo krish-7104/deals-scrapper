@@ -24,10 +24,6 @@ exports.userTracker = async (req, res) => {
   const userEmail = req.params.email;
   try {
     const userTrackers = await priceUser.find({ email: userEmail });
-
-    if (userTrackers.length === 0) {
-      return res.status(404).json({ message: 'No product trackers found for the provided email.' });
-    }
     return res.status(200).json({ message: 'Price Trackers Found', userTrackers });
   } catch (error) {
     console.error('Error retrieving product trackers:', error);
