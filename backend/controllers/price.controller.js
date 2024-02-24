@@ -23,7 +23,7 @@ exports.priceToCompare = async (req, res) => {
 exports.userTracker = async (req, res) => {
   const userEmail = req.params.email;
   try {
-    const userTrackers = await priceUser.find({ email: userEmail });
+    const userTrackers = await priceUser.find({ email: userEmail }).sort({ createdAt: -1 });
     return res.status(200).json({ message: 'Price Trackers Found', userTrackers });
   } catch (error) {
     console.error('Error retrieving product trackers:', error);
