@@ -18,20 +18,27 @@ const VerifyToken = () => {
   });
   const updatePasswordHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      toast.loading("Updating Password...");
-      const resp = await axios.post(`${API_LINK}/user/updatePassword`, data);
-      toast.dismiss();
-      toast.success(resp.data.message);
-      router.push("login");
-    } catch (error: any) {
-      toast.dismiss();
-      console.log("Update Password Error", error?.response?.data?.message);
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message);
-      } else {
-        toast.error("Something Went Wrong");
+    if (data.password === data.confirmPassword) {
+      try {
+        toast.loading("Updating Password...");
+        const resp = await axios.post(`${API_LINK}/user/updatePassword`, {
+          password: data.password,
+          token: token ? token : "",
+        });
+        toast.dismiss();
+        toast.success(resp.data.message);
+        router.push("login");
+      } catch (error: any) {
+        toast.dismiss();
+        console.log("Update Password Error", error?.response?.data?.message);
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error("Something Went Wrong");
+        }
       }
+    } else {
+      toast.error("Both Password Are Different");
     }
   };
   return (

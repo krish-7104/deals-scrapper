@@ -142,32 +142,10 @@ exports.user = async (req, res) => {
     }
 }
 
-// Forgot Password
-// exports.forgotPassword = async (req, res) => {
-//     const { email } = req.body;
-
-//     try {
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             return res.status(404).json({ error: "User not found" });
-//         }
-
-//         // Generate a token for password reset
-//         const resetToken = jwt.sign({ email }, 'secret', { expiresIn: '1h' });
-
-//         // Send email with reset token
-//         sendMail(user.email, resetToken);
-
-//         res.json({ message: "Reset password link sent to your email" });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// };
-
-const generateToken = (userId) => {
-    return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+const generateToken = (userId, resetTokenId) => {
+    return jwt.sign({ userId, resetTokenId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
+
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -176,10 +154,11 @@ exports.forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const token = generateToken(user._id);
 
-    const resetToken = new ResetToken({ userId: user._id, token });
+    const resetToken = new ResetToken({ userId: user._id });
     await resetToken.save();
+    
+    const token = generateToken(user._id, resetToken._id);
 
     sendMail(user.email, token);
 
@@ -199,68 +178,5 @@ const JWT_SECRET = process.env.JWT_SECRET;
 console.log('JWT Secret Key:', JWT_SECRET);
 
 
-// Reset Password
-// exports.resetPassword = async (req, res) => {
-//     const { email, newPassword, resetToken } = req.body;
-
-//     try {
-//         jwt.verify(resetToken, 'secret', async (err, decoded) => {
-//             if (err) {
-//                 return res.status(400).json({ error: "Invalid or expired token" });
-//             }
-
-//             const user = await User.findOne({ email });
-//             if (!user) {
-//                 return res.status(404).json({ error: "User not found" });
-//             }
-
-//             // Update the password
-//             const hashedPassword = await bcrypt.hash(newPassword, 10);
-//             user.password = hashedPassword;
-//             await user.save();
-
-//             res.json({ message: "Password reset successfully" });
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// };
-
-exports.updatePassword = async (req, res) => {
-    const { token: resetTokenId, newPassword } = req.body;
-  
-    try {
-      // Find reset token document in the database
-      const resetTokenDoc = await ResetToken.findById(resetTokenId);
-      if (!resetTokenDoc) {
-        return res.status(404).json({ message: 'Reset token not found' });
-      }
-  
-      // Verify the JWT token stored in the reset token document
-      const { userId, token: jwtToken } = resetTokenDoc;
-      try {
-        const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
-        // If the token is valid, update the user's password with the new password
-        const user = await User.findById(userId);
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedPassword;
-        await user.save();
-  
-        // Delete the reset token document from the database
-        await ResetToken.findByIdAndDelete(resetTokenId);
-  
-        return res.status(200).json({ message: 'Password reset successfully' });
-      } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-          return res.status(401).json({ message: 'Reset token has expired' });
-        }
-        return res.status(401).json({ message: 'Invalid reset token' });
-      }
-    } catch (error) {
-      console.error('Error resetting password:', error);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
-  };
 
 
