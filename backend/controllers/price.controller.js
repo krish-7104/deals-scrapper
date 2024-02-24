@@ -3,8 +3,8 @@ const { priceMail } = require('../utils/price-mail');
 const cron = require('node-cron');
 const amazonPriceScrape = require('../price-scrapper/amazon-price');
 const flipkartPriceScraper = require('../price-scrapper/flipkart-price');
-const AjioPriceScrapper=require('../price-scrapper/ajio-price');
-const myntraPriceScrapper=require('../price-scrapper/myntra-price');
+const AjioPriceScrapper = require('../price-scrapper/ajio-price');
+const myntraPriceScrapper = require('../price-scrapper/myntra-price');
 
 // cron.schedule('0 9 * * *', async () => {
 //   console.log('Running price comparison task at 9 a.m.');
@@ -54,7 +54,7 @@ async function saveUserData(price, productUrl, email) {
   }
 }
 
-async function comparePricesDaily() {
+exports.comparePricesDaily = async () => {
   try {
     const allUserData = await priceUser.find();
 
@@ -63,22 +63,22 @@ async function comparePricesDaily() {
 
       if (productUrl.includes('amazon')) {
         const amazonPrice = await amazonPriceScrape(productUrl);
-        if (amazonPrice < price) {
+        if (amazonPrice.discount_price < price) {
           await priceMail(email, productUrl);
         }
       } else if (productUrl.includes('flipkart')) {
         const flipkartPrice = await flipkartPriceScraper(productUrl);
-        if (flipkartPrice < price) {
+        if (flipkartPrice.discount_price < price) {
           await priceMail(email, productUrl);
         }
-      }else if (productUrl.includes('ajio')) {
+      } else if (productUrl.includes('ajio')) {
         const ajioPrice = await AjioPriceScrapper(productUrl);
-        if (ajioPrice < price) {
+        if (ajioPrice.discount_price < price) {
           await priceMail(email, productUrl);
         }
-      }else if (productUrl.includes('myntra')) {
+      } else if (productUrl.includes('myntra')) {
         const myntraPrice = await myntraPriceScrapper(productUrl);
-        if (myntraPrice < price) {
+        if (myntraPrice.discount_price < price) {
           await priceMail(email, productUrl);
         }
       }

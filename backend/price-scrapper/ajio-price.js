@@ -13,7 +13,7 @@ const AjioPriceScrapper = async (url) => {
         await page.goto(url, { waitUntil: 'domcontentloaded' });
         const htmlContent = await page.content();
         const $ = cheerio.load(htmlContent);
-        product.name = `(${$(".prod-name").text().trim()})`;
+        product.name = `${$(".prod-name").text().trim()} - (${$(".brand-name").text().trim()})`;
         product.discount = parseInt($
             (".prod-discnt")
             .text().replace(/[^\d.]/g, ''))
@@ -31,7 +31,6 @@ const AjioPriceScrapper = async (url) => {
         return null
     }
 }
-
 
 
 module.exports = AjioPriceScrapper

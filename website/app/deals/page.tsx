@@ -235,9 +235,6 @@ const Page = () => {
           No Result Found!!
         </p>
       )}
-      {!loading && deals && deals.length === 0 && (
-        <p className="font-semibold">No Deals For Now!</p>
-      )}
       <section className="flex justify-center items-center flex-col md:grid md:grid-cols-3 gap-6 my-6 w-[90%] md:w-[95%] mx-auto">
         {!loading &&
           deals?.map((deal) => {

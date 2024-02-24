@@ -21,7 +21,7 @@ const getFlipkartDealsScrapper = require("./deals-scrapper/flipkart-deals.js");
 const getAjioDealsScrapper = require("./deals-scrapper/ajio.js");
 const getMeeshoDealsScrapper = require("./deals-scrapper/meesho.js");
 const convertDataToCSV = require("./utils/json-to-csv.js");
-
+const comparePricesDaily = require("./controllers/price.controller.js")
 const app = express()
 connectToMongo()
 
@@ -57,6 +57,13 @@ app.get('/convert', async (req, res) => {
 
 app.use("", logRouter)
 // get all logs: http://localhost:4000/log
+
+
+cron.schedule('50 10 * * *', async () => {
+    console.log('Running price comparison task at 9 a.m.');
+    await comparePricesDaily();
+});
+
 
 const cronHour = 9
 const cronMinute = 16
