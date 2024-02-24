@@ -10,6 +10,7 @@ import { API_LINK } from "../utils/base-api";
 import CompareView from "@/app/components/Home Page/compare-view";
 import isClothingProduct from "@/utils/cloth-checker";
 import CompareLoader from "@/app/components/Home Page/compare-loader";
+import DealCard from "./components/deal-card";
 
 interface DealData {
   company: string;
@@ -100,11 +101,11 @@ const Home = () => {
   return (
     <main>
       <section className="mt-20 mb-14 w-full flex justify-center flex-col items-center">
-        <p className="mb-5 font-medium text-xl">
+        <p className="mb-5 font-medium text-lg md:text-xl text-center w-[90%]">
           Search for a product and we&apos;ll find the best deals for you
         </p>
         <form
-          className="w-[40%] shadow-md border flex bg-white rounded-md"
+          className="md:w-[40%] w-[90%] shadow-md border flex bg-white rounded-md"
           onSubmit={searchProduct}
         >
           <input
@@ -144,9 +145,28 @@ const Home = () => {
         </form>
       </section>
       {showCompareView && dealsData && (
-        <section className="grid grid-cols-2 justify-center w-[80%] mx-auto">
-          {dealsData.map((item, index) => (
-            <CompareView key={index} data={item} />
+        <section className="w-[90%] md:w-[80%] mx-auto md:grid md:grid-cols-2 justify-center md:gap-x-4">
+          {dealsData.map((item: DealData, index) => (
+            <div
+              className="flex justify-center items-center flex-col"
+              key={item.company + index}
+            >
+              <p className="font-semibold text-lg mb-1 mr-auto md:mt-0 mt-6">
+                Best Match Result
+              </p>
+              <CompareView key={index} data={item} />
+              <p className="font-semibold text-lg mb-1 mt-5 mr-auto">
+                Other Results
+              </p>
+              {item.data.slice(0, 8).map((item: Deal) => {
+                return (
+                  <DealCard
+                    deal={item}
+                    key={item.discount_price + item.discount}
+                  />
+                );
+              })}
+            </div>
           ))}
         </section>
       )}

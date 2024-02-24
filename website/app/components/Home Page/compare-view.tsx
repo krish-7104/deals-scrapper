@@ -64,8 +64,7 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
   };
 
   return (
-    <section className="mb-10 w-[85%] mx-auto">
-      <p className="font-semibold text-lg mb-1">Best Match Result</p>
+    <section className="md:mb-6 mx-auto w-full">
       <div className="w-full shadow-sm flex justify-center items-center flex-col rounded border p-6">
         <div className="flex justify-between items-center w-full mb-5">
           <span className="border-primary text-primary border-2 px-2 py-[2px] rounded-2xl text-sm font-medium text-center flex justify-center items-center ">
@@ -114,7 +113,10 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
             open={dialogOpen}
             onOpenChange={() => setDialogOpen(!dialogOpen)}
           >
-            <DialogTrigger onClick={() => setDialogOpen(true)}>
+            <DialogTrigger
+              className="w-1/2"
+              onClick={() => setDialogOpen(true)}
+            >
               <Button size={"sm"} className="w-full">
                 Add Price Tracker
               </Button>
@@ -165,19 +167,13 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
           </Dialog>
           <Button
             size={"sm"}
-            className="w-full bg-black hover:bg-black/90"
+            className="w-1/2 bg-black hover:bg-black/90"
             onClick={() => window.open(data.best.link)}
           >
             Buy Now
           </Button>
         </div>
       </div>
-      <p className="font-semibold text-lg mb-1 mt-5">Other Results</p>
-      {data?.data?.slice(0, 8).map((item) => {
-        return (
-          <DealCard deal={item} key={item.discount_price + item.discount} />
-        );
-      })}
     </section>
   );
 };
