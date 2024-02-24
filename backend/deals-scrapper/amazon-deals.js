@@ -13,7 +13,7 @@ const getAmazonDealsScrapper = async () => {
     logStart("Amazon Deals Scrapper")
     let allData = [];
     try {
-        for (let i = 0; i < categories.length; i++) {
+        for (let i = 0; i < AMAZON_SCRAPE_PAGE; i++) {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
             await page.goto(categories[i].deal_link);
