@@ -3,6 +3,8 @@ const { priceMail } = require('../utils/price-mail');
 const cron = require('node-cron');
 const amazonPriceScrape = require('../price-scrapper/amazon-price');
 const flipkartPriceScraper = require('../price-scrapper/flipkart-price');
+const AjioPriceScrapper=require('../price-scrapper/ajio-price');
+const myntraPriceScrapper=require('../price-scrapper/myntra-price');
 
 // cron.schedule('0 9 * * *', async () => {
 //   console.log('Running price comparison task at 9 a.m.');
@@ -70,6 +72,16 @@ async function comparePricesDaily() {
       } else if (productUrl.includes('flipkart')) {
         const flipkartPrice = await flipkartPriceScraper(productUrl);
         if (flipkartPrice < price) {
+          await priceMail(email, productUrl);
+        }
+      }else if (productUrl.includes('ajio')) {
+        const ajioPrice = await AjioPriceScrapper(productUrl);
+        if (ajioPrice < price) {
+          await priceMail(email, productUrl);
+        }
+      }else if (productUrl.includes('myntra')) {
+        const myntraPrice = await myntraPriceScrapper(productUrl);
+        if (myntraPrice < price) {
           await priceMail(email, productUrl);
         }
       }
