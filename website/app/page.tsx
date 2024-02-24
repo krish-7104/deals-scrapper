@@ -51,11 +51,13 @@ const Home = () => {
       setShowCompareView(false);
       setIsComparing(true);
       let formattedData: DealData[] = [];
+
       if (isClothingProduct(searchTerm)) {
-        const ajioResp = await axios(`${API_LINK}/search/ajio?q=${searchTerm}`);
-        const myntraResp = await axios(
-          `${API_LINK}/search/myntra?q=${searchTerm}`
-        );
+        const [ajioResp, myntraResp] = await Promise.all([
+          axios(`${API_LINK}/search/ajio?q=${searchTerm}`),
+          axios(`${API_LINK}/search/myntra?q=${searchTerm}`),
+        ]);
+
         formattedData = [
           {
             company: "Ajio",
@@ -69,12 +71,11 @@ const Home = () => {
           },
         ].sort((a, b) => a.best.discount - b.best.discount);
       } else {
-        const amazonResp = await axios(
-          `${API_LINK}/search/amazon?q=${searchTerm}`
-        );
-        const flipkartResp = await axios(
-          `${API_LINK}/search/flipkart?q=${searchTerm}`
-        );
+        const [amazonResp, flipkartResp] = await Promise.all([
+          axios(`${API_LINK}/search/amazon?q=${searchTerm}`),
+          axios(`${API_LINK}/search/flipkart?q=${searchTerm}`),
+        ]);
+
         formattedData = [
           {
             company: "Amazon",

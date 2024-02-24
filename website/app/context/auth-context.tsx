@@ -10,7 +10,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (userId: string, email: string, name: string) => void;
-  logout: () => void; // Define the logout function in the context type
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

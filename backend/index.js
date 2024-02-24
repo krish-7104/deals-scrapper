@@ -58,35 +58,38 @@ app.get('/convert', async (req, res) => {
 app.use("", logRouter)
 // get all logs: http://localhost:4000/log
 
-cron.schedule('0 7 * * *', () => {
+const cronHour = 9
+const cronMinute = 16
+
+cron.schedule(`${cronMinute} ${cronHour} * * *`, () => {
     getAmazonCategoryScrapper()
 });
 
-cron.schedule('5 7 * * *', () => {
+cron.schedule(`27 ${cronHour} * * *`, () => {
     getAmazonDealsScrapper()
 });
 
-cron.schedule('10 7 * * *', () => {
+cron.schedule(`29 ${cronHour} * * *`, () => {
     getFlipkartCategoryScrapper()
 });
 
-cron.schedule('15 7 * * *', () => {
+cron.schedule(`30 ${cronHour} * * *`, () => {
     getFlipkartDealsScrapper()
 });
 
-cron.schedule('20 7 * * *', () => {
+cron.schedule(`34 ${cronHour} * * *`, () => {
     getMyntraDealsScrapper()
 });
 
-cron.schedule('25 7 * * *', () => {
+cron.schedule(`38 ${cronHour} * * *`, () => {
     getAjioDealsScrapper()
 });
 
-cron.schedule('30 7 * * *', () => {
+cron.schedule(`40 ${cronHour} * * *`, () => {
     getMeeshoDealsScrapper()
 });
 
-cron.schedule('35 7 * * *', () => {
+cron.schedule(`+35 ${cronHour} * * *`, () => {
     convertDataToCSV()
 });
 

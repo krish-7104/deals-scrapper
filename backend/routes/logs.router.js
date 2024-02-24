@@ -16,7 +16,7 @@ router.get("/reset-log", async (req, res) => {
 router.get('/log', async (req, res) => {
     try {
         const logContent = fs.readFileSync("./log.txt", "utf-8");
-        const logEntries = logContent.split('\n');
+        const logEntries = logContent.split('\n').splice(1);
         let html = `
             <!DOCTYPE html>
             <html>
@@ -35,6 +35,16 @@ router.get('/log', async (req, res) => {
                     tr:nth-child(even) {
                         background-color: #f2f2f2;
                     }
+                    .success{
+                        background-color:#22c55e;
+                        color:white;
+                        text-align:center;
+                    }
+                    .failure{
+                        background-color:#f43f5e;
+                        color:white;
+                        text-align:center;
+                    }
                 </style>
             </head>
             <body>
@@ -42,9 +52,10 @@ router.get('/log', async (req, res) => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Active</th>
+                            <th>Activity</th>
                             <th>Started</th>
                             <th>Ended</th>
+                            <th>Success</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,11 +65,21 @@ router.get('/log', async (req, res) => {
             const startTime = parts[1]?.split(" : ")[0];
             const endTime = parts[1]?.split(" : ")[1];
 
-            html += `<tr>
-                        <td>${parts[0]}</td>
-                        <td>${startTime}</td>
-                        <td>${endTime}</td>
-                    </tr>`;
+            if (!endTime) {
+                html += `<tr>
+                <td>${parts[0]}</td>
+                <td>${startTime}</td>
+                <td>${endTime}</td>
+                <td class="failure">False</td>
+                </tr>`;
+            } else {
+                html += `<tr>
+                <td>${parts[0]}</td>
+                <td>${startTime}</td>
+                <td>${endTime}</td>
+                <td class="success">True</td>
+                </tr>`;
+            }
         }
         html += `
        </tbody>

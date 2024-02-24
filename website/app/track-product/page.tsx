@@ -30,15 +30,14 @@ const TrackProduct = () => {
   const addTrackerHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      toast.loading("Logging In...");
+      toast.loading("Adding Tracker...");
       const resp = await axios.post(`${API_LINK}/user/priceToCompare`, data);
       toast.dismiss();
       toast.success(resp.data.message);
-      localStorage.setItem("token", resp.data.token);
-      router.replace("/");
+      router.push("/my-trackers");
     } catch (error) {
       toast.dismiss();
-      console.log("Login Error", error);
+      console.log("Tracker Adding Error", error);
       toast.error("Something Went Wrong");
     }
   };
@@ -47,7 +46,7 @@ const TrackProduct = () => {
       <p className="mb-5 text-center font-semibold text-2xl">
         Add Tracker to a Product
       </p>
-      <form className="w-[35%] border px-8 py-6 rounded-md">
+      <form className="w-[90%] md:w-[35%] border px-8 py-6 rounded-md">
         <div className="mb-2 w-full">
           <Label htmlFor="email">Email Address</Label>
           <Input
