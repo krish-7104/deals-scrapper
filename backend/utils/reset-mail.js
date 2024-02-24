@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 exports.sendMail = (to, token) => {
     const mailOptions = {
-        from: process.env.NODEMAILER_USER,
+        from: `Deals Scrapper ${process.env.NODEMAILER_USER}`,
         to,
         subject: 'Password Reset',
         text: `Reset your password by clicking on the following link: http://localhost:3000/verify-token?token=${token}`

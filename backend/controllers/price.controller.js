@@ -62,24 +62,24 @@ exports.comparePricesDaily = async () => {
       const { price, productUrl, email } = userData;
 
       if (productUrl.includes('amazon')) {
-        const amazonPrice = await amazonPriceScrape(productUrl);
-        if (amazonPrice.discount_price < price) {
-          await priceMail(email, productUrl);
+        const amazonData = await amazonPriceScrape(productUrl);
+        if (amazonData.discount_price < price) {
+          await priceMail(email, productUrl, amazonData);
         }
       } else if (productUrl.includes('flipkart')) {
-        const flipkartPrice = await flipkartPriceScraper(productUrl);
-        if (flipkartPrice.discount_price < price) {
-          await priceMail(email, productUrl);
+        const flipkartData = await flipkartPriceScraper(productUrl);
+        if (flipkartData.discount_price < price) {
+          await priceMail(email, productUrl, flipkartData);
         }
       } else if (productUrl.includes('ajio')) {
-        const ajioPrice = await AjioPriceScrapper(productUrl);
-        if (ajioPrice.discount_price < price) {
-          await priceMail(email, productUrl);
+        const ajioData = await AjioPriceScrapper(productUrl);
+        if (ajioData.discount_price < price) {
+          await priceMail(email, productUrl, ajioData);
         }
       } else if (productUrl.includes('myntra')) {
-        const myntraPrice = await myntraPriceScrapper(productUrl);
-        if (myntraPrice.discount_price < price) {
-          await priceMail(email, productUrl);
+        const myntraData = await myntraPriceScrapper(productUrl);
+        if (myntraData.discount_price < price) {
+          await priceMail(email, productUrl, myntraData);
         }
       }
     }
