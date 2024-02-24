@@ -135,10 +135,15 @@ const Page = () => {
   };
 
   const renderPaginationItems = () => {
+    const isAndroid =
+      typeof window !== "undefined" &&
+      /Android/i.test(window.navigator.userAgent);
     const adjacentPages = 1;
-    const pagesToShow = 2 * adjacentPages + 1;
+    let pagesToShow = 2 * adjacentPages + 1;
     const paginationItems: JSX.Element[] = [];
-
+    if (isAndroid) {
+      pagesToShow = 1 * adjacentPages + 1;
+    }
     let startPage = Math.max(1, page - adjacentPages);
     let endPage = Math.min(totalPages, startPage + pagesToShow - 1);
 
@@ -251,7 +256,7 @@ const Page = () => {
             })}
       </section>
       <button
-        className={`fixed bottom-10 right-10 bg-primary p-3 text-white text-base rounded-full transition-all ease-linear duration-200
+        className={`fixed md:block bottom-24 md:bottom-10 hidden right-10 bg-primary p-3 text-white text-base rounded-full transition-all ease-linear duration-200
           ${showScrollUp ? "scale-100" : "scale-0"}
         `}
         onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}

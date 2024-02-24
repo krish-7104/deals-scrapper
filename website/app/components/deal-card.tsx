@@ -26,7 +26,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
 
   return (
     <Link
-      className="bg-white border p-4 rounded-md flex cursor-pointer h-[160px] group"
+      className="bg-white border p-4 rounded-md flex cursor-pointer md:h-[160px] group w-full overflow-hidden"
       href={link}
       target="_blank"
       rel="noreferrer"
@@ -34,7 +34,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
     >
       <Image
         src={image}
-        className="w-1/3 h-32 object-contain mr-4 py-2 group-hover:scale-105 transition-animate"
+        className="w-1/3 h-28 md:h-32 object-contain mr-4 py-2 group-hover:scale-105 transition-animate"
         height={200}
         width={200}
         alt=""
@@ -42,14 +42,16 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
       />
       <div className="flex flex-col justify-start items-start w-2/3">
         <div className="flex justify-between items-end w-full mb-2">
-          <div className="flex items-end">
-            <p className="font-semibold text-xl mr-2">₹{discount_price}</p>
+          <div className="flex items-center md:items-end">
+            <p className="font-semibold md:text-xl mr-2">₹{discount_price}</p>
             {original_price && (
-              <p className="font-medium line-through">₹{original_price}</p>
+              <p className="font-medium text-xs md:text-base line-through">
+                ₹{original_price}
+              </p>
             )}
           </div>
           {original_price && discount_price && (
-            <span className="border-primary text-primary border-2 px-2 py-[2px] rounded-2xl text-sm font-medium ml-auto text-center flex justify-center items-center">
+            <span className="border-primary text-primary border-2 px-2 py-[2px] rounded-2xl text-xs md:text-sm font-medium ml-auto text-center flex justify-center items-center">
               <TbDiscount2 className="text-lg mr-1 group-hover:animate-spin-slow" />
               {discount
                 ? discount
@@ -61,7 +63,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
             </span>
           )}
         </div>
-        <p className="line-clamp-3 text-sm">{title}</p>
+        <p className="line-clamp-3 text-xs w-full md:text-sm">{title}</p>
         {getLogoHandler && (
           <Image
             src={getLogoHandler}
