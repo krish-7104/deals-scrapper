@@ -1,7 +1,7 @@
 const User = require('../models/user.model.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const crypto=require('crypto');
+const crypto = require('crypto');
 const ResetToken = require('../models/resetToken.model');
 const { sendMail } = require('../utils/reset-mail.js');
 
@@ -142,41 +142,60 @@ exports.user = async (req, res) => {
     }
 }
 
-const generateToken = (userId, resetTokenId) => {
-    return jwt.sign({ userId, resetTokenId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+const generateToken = (userId) => {
+    return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
 exports.forgotPassword = async (req, res) => {
-  const { email } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const token = generateToken(user._id);
+        const resetToken = new ResetToken({ token });
+        await resetToken.save();
+        sendMail(user.email, resetToken._id);
+        return res.status(200).json({ message: 'Reset password email sent' });
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
-
-    const resetToken = new ResetToken({ userId: user._id });
-    await resetToken.save();
-    
-    const token = generateToken(user._id, resetToken._id);
-
-    sendMail(user.email, token);
-
-    return res.status(200).json({ message: 'Reset password email sent successfully' });
-  } catch (error) {
-    console.error('Error resetting password:', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
 };
 
-if (!process.env.JWT_SECRET) {
-  const randomBuffer = crypto.randomBytes(32); 
-  process.env.JWT_SECRET = randomBuffer.toString('hex');
-}
-const JWT_SECRET = process.env.JWT_SECRET;
 
-console.log('JWT Secret Key:', JWT_SECRET);
+exports.updatePassword = async (req, res) => {
+    const { token, password } = req.body;
+    try {
+        if (!token) {
+            return res.status(404).json({ message: 'Token not found' });
+        }
+        const resetTokenData = await ResetToken.findById(token)
+        if (!resetTokenData) {
+            return res.status(404).json({ message: 'Token not found' });
+        }
+        try {
+            // Verify the token
+            const tokenData = jwt.verify(resetTokenData.token, process.env.JWT_SECRET);
 
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(password, 10);
 
+            // Update user password
+            await User.findByIdAndUpdate(tokenData.userId, { password: hashedPassword });
 
+            // Delete reset token
+            await ResetToken.findByIdAndDelete(token);
+
+            return res.status(200).json({ message: 'Password updated successfully' });
+        } catch (error) {
+            console.error('Error verifying JWT:', error);
+            return res.status(401).json({ message: 'Invalid Token' });
+        }
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
 

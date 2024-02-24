@@ -12,6 +12,4 @@ router.route('/priceToCompare').post(priceController.priceToCompare);
 router.route('/deleteTracker/:id').delete(priceController.deleteTracker);
 router.route('/userTracker/:email').get(priceController.userTracker);
 
-
-
 module.exports = router;
