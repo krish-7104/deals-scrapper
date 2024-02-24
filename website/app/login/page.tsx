@@ -64,7 +64,7 @@ const Login = () => {
       <p className="mb-5 text-center font-semibold text-2xl">
         Login To Your Account
       </p>
-      <form className="w-[35%] border px-8 py-6 rounded-md">
+      <form className="w-[90%] md:w-[35%] border px-8 py-6 rounded-md">
         <div className="mt-2 w-full">
           <Label htmlFor="email">Email</Label>
           <Input

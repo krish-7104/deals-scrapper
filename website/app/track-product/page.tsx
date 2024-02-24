@@ -46,7 +46,7 @@ const TrackProduct = () => {
       <p className="mb-5 text-center font-semibold text-2xl">
         Add Tracker to a Product
       </p>
-      <form className="w-[35%] border px-8 py-6 rounded-md">
+      <form className="w-[90%] md:w-[35%] border px-8 py-6 rounded-md">
         <div className="mb-2 w-full">
           <Label htmlFor="email">Email Address</Label>
           <Input

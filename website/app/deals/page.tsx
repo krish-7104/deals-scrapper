@@ -197,8 +197,8 @@ const Page = () => {
 
   return (
     <main className="flex justify-center items-center flex-col">
-      <section className="flex justify-between flex-row-reverse items-center mt-10 mb-6 w-[90%]">
-        <div className="w-[30%] flex">
+      <section className="flex justify-center flex-col md:justify-between md:flex-row-reverse items-center mt-10 mb-6 w-[90%]">
+        <div className="md:w-[30%] flex w-full mb-3 md:mb-0">
           <Input
             type="text"
             placeholder="Search Deal.."
@@ -208,7 +208,7 @@ const Page = () => {
           />
         </div>
         <Select onValueChange={(text: string) => setCompany(text)}>
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="md:w-[200px]">
             <SelectValue placeholder="Company Filter" />
           </SelectTrigger>
           <SelectContent>

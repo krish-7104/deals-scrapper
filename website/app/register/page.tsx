@@ -46,10 +46,10 @@ const Register = () => {
 
   return (
     <main className="h-[90vh] w-full flex justify-center items-center flex-col">
-      <p className="mb-5 text-center font-semibold text-2xl">
+      <p className="mb-5 text-center font-semibold text-xl md:text-2xl">
         Welcome To Deal Scrapper
       </p>
-      <form className="w-[35%] border px-8 py-6 rounded-md">
+      <form className="w-[90%] md:w-[35%] border px-8 py-6 rounded-md">
         <div className="w-full">
           <Label htmlFor="name">Full Name</Label>
           <Input
