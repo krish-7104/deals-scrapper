@@ -11,6 +11,7 @@ const myntraPriceScrapper=require('../price-scrapper/myntra-price');
 //   await comparePricesDaily();
 // });
 
+
 exports.priceToCompare = async (req, res) => {
   const { price, productUrl, email } = req.body;
   try {

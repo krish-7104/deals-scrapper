@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -13,7 +14,7 @@ exports.sendMail = (to, token) => {
         from: process.env.NODEMAILER_USER,
         to,
         subject: 'Password Reset',
-        text: `Reset your password by clicking on the following link: http://localhost:4000/api/v1/user/resetPassword?token=${token}`
+        text: `Reset your password by clicking on the following link: http://localhost:3000/verify-token?token=${token}`
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
