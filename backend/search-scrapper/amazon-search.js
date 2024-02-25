@@ -10,14 +10,15 @@ const AmazonSearchProduct = async (req, res) => {
         if (!search_query) {
             return res.status(400).json({ error: 'No search query provided' });
         }
-        const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36';
 
-        const browser = await puppeteer.launch({ headless: true, args: [`--user-agent=${userAgent}`] });
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
 
         await page.setViewport({ width: 1366, height: 768 });
 
-        await page.goto(`https://www.amazon.in/s?k=${search_query}`, { waitUntil: 'networkidle2' });
+        await page.goto(`https://www.amazon.in/s?k=${search_query}`, { waitUntil: 'domcontentloaded' });
+
+        // await autoScroll(page);
 
         const products = await page.evaluate(() => {
             const data = [];
@@ -67,3 +68,21 @@ const AmazonSearchProduct = async (req, res) => {
 };
 
 module.exports = AmazonSearchProduct;
+
+async function autoScroll(page) {
+    await page.evaluate(async () => {
+        await new Promise((resolve, reject) => {
+            var totalHeight = 0;
+            var distance = 100;
+            var timer = setInterval(() => {
+                var scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+                if (totalHeight >= scrollHeight) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
+        });
+    });
+}
