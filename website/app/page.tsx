@@ -49,7 +49,7 @@ const Home = () => {
   }, [searchTerm]);
 
   const searchProduct = async (e: React.FormEvent) => {
-    user && AddSearchHandler(user?.email ? user.email : "", searchTerm);
+    user && AddSearchHandler(user?.userId ? user.userId : "", searchTerm);
     e.preventDefault();
     try {
       setShowCompareView(false);

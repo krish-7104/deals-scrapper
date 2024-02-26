@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React, { useState } from "react";
 import { TbDiscount2 } from "react-icons/tb";
-import DealCard from "../deal-card";
 import {
   Dialog,
   DialogContent,
@@ -35,7 +34,6 @@ interface DealDataProp {
 
 const CompareView = ({ data }: { data: DealDataProp }) => {
   const { user } = useAuth();
-  const router = useRouter();
   const [tracker, setTracker] = useState<{
     email: string | undefined;
     price: undefined | number;
