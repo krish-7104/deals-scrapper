@@ -25,9 +25,6 @@ const getAmazonCategoryScrapper = async () => {
         const currentPageData = await Promise.all(categories.map(async (index, element) => {
             const product = $(element);
             return {
-                title: product.find(".DealContent-module__truncate_sWbxETx42ZPStTc9jwySW").text().trim(),
-                image: product.find(".DealImage-module__imageObjectFit_1G4pEkUEzo9WEnA3Wl0XFv").attr("src"),
-                discount: product.find(".BadgeAutomatedLabel-module__badgeAutomatedLabel_2Teem9LTaUlj6gBh5R45wd").first().text().trim(),
                 deal_link: product.find(".a-link-normal.DealLink-module__dealLink_3v4tPYOP4qJj9bdiy0xAT.a-color-base.a-text-normal").attr("href")
             };
         }));

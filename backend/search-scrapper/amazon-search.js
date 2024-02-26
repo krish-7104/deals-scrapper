@@ -11,12 +11,18 @@ const AmazonSearchProduct = async (req, res) => {
             return res.status(400).json({ error: 'No search query provided' });
         }
 
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        });
         const page = await browser.newPage();
+
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36');
 
         await page.setViewport({ width: 1366, height: 768 });
 
         await page.goto(`https://www.amazon.in/s?k=${search_query}`, { waitUntil: 'domcontentloaded' });
+
 
         // await autoScroll(page);
 
