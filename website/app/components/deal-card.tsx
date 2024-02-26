@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 import { TbDiscount2 } from "react-icons/tb";
+import lzString from "lz-string";
+import { AddSearchHandler } from "@/utils/search-store";
+import { useAuth } from "../context/auth-context";
 
 interface DealProps {
   title: string;
@@ -13,6 +17,8 @@ interface DealProps {
 }
 
 const DealCard = ({ deal }: { deal: DealProps }) => {
+  const { user } = useAuth();
+  const router = useRouter();
   const getLogoHandler = useMemo(() => {
     if (deal.link.includes("myntra")) return "/logos/myntra.png";
     if (deal.link.includes("amazon")) return "/logos/amazon.png";
@@ -24,13 +30,17 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
 
   const { title, image, original_price, discount_price, link, discount } = deal;
 
+  const ClickHandler = () => {
+    const compressedTitle = lzString.compressToEncodedURIComponent(title);
+    user && AddSearchHandler(user?.email ? user.email : "", title);
+    router.push(`/details/${compressedTitle}`);
+  };
+
   return (
-    <Link
+    <div
       className="bg-white border p-4 rounded-md flex cursor-pointer md:h-[160px] group w-full overflow-hidden"
-      href={link}
-      target="_blank"
-      rel="noreferrer"
       key={title}
+      onClick={ClickHandler}
     >
       <Image
         src={image}
@@ -75,7 +85,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
           />
         )}
       </div>
-    </Link>
+    </div>
   );
 };
 

@@ -11,6 +11,8 @@ import CompareView from "@/app/components/Home Page/compare-view";
 import isClothingProduct from "@/utils/cloth-checker";
 import CompareLoader from "@/app/components/Home Page/compare-loader";
 import DealCard from "./components/deal-card";
+import { AddSearchHandler } from "@/utils/search-store";
+import { useAuth } from "./context/auth-context";
 
 interface DealData {
   company: string;
@@ -32,7 +34,7 @@ const Home = () => {
   const [dealsData, setDealsData] = useState<DealData[]>([]);
   const [isComparing, setIsComparing] = useState(false);
   const [showCompareView, setShowCompareView] = useState(false);
-
+  const { user } = useAuth();
   const clearSearch = () => {
     setSearchTerm("");
     setIsComparing(false);
@@ -47,6 +49,7 @@ const Home = () => {
   }, [searchTerm]);
 
   const searchProduct = async (e: React.FormEvent) => {
+    user && AddSearchHandler(user?.email ? user.email : "", searchTerm);
     e.preventDefault();
     try {
       setShowCompareView(false);
