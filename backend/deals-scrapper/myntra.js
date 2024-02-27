@@ -15,7 +15,7 @@ const getAmazonDealsScrapper = async () => {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
             await page.goto(`https://www.myntra.com/deals?p=${i}`);
-            await page.waitForSelector("img");
+            // await page.waitForSelector("img");
             await autoScroll(page);
             const htmlContent = await page.content();
             const $ = cheerio.load(htmlContent);

@@ -32,7 +32,7 @@ const getAmazonCategoryScrapper = async () => {
         allData = allData.concat(currentPageData);
 
         if (index != lastPageNumber - 1) {
-            await page.click('.a-last a');
+            await page.click('.a-last');
             await page.waitForNavigation()
         }
     }
