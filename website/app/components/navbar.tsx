@@ -88,7 +88,7 @@ const Navbar = () => {
         <ul
           className={`${
             showMenu ? "flex" : "hidden"
-          } md:flex justify-center md:justify-center items-center gap-x-4 backdrop-blur-2xl h-[100vh] w-full absolute top-0 flex-col md:flex-row md:static md:h-auto md:w-auto left-0 mr-0 md:mr-3 z-20`}
+          } md:flex justify-center md:justify-center items-center gap-x-4 bg-white h-[100vh] w-full absolute top-0 flex-col md:flex-row md:static md:h-auto md:w-auto left-0 mr-0 md:mr-3 z-20`}
         >
           <Button
             onClick={() => handleButtonClick("home")}
@@ -153,7 +153,7 @@ const Navbar = () => {
           <Button
             size={"icon"}
             className="ml-3 md:hidden flex"
-            onClick={() => setShowMenu(true)}
+            onClick={() => setShowMenu(!showMenu)}
           >
             <AiOutlineMenu size={22} />
           </Button>
@@ -162,7 +162,7 @@ const Navbar = () => {
           <Button
             size={"icon"}
             className="ml-3 relative z-40 md:hidden flex"
-            onClick={() => setShowMenu(false)}
+            onClick={() => setShowMenu(!showMenu)}
           >
             <AiOutlineClose size={22} />
           </Button>

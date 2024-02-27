@@ -13,6 +13,8 @@ import CompareLoader from "@/app/components/Home Page/compare-loader";
 import DealCard from "./components/deal-card";
 import { AddSearchHandler } from "@/utils/search-store";
 import { useAuth } from "./context/auth-context";
+import toast from "react-hot-toast";
+import Recommendations from "./components/Home Page/recommend";
 
 interface DealData {
   company: string;
@@ -98,6 +100,9 @@ const Home = () => {
       setIsComparing(false);
     } catch (error) {
       console.error(error);
+      setIsComparing(false);
+      setShowCompareView(false);
+      toast.error("Error In Finding Products!");
     }
   };
 
@@ -182,6 +187,7 @@ const Home = () => {
             ))}
         </section>
       )}
+      {/* <Recommendations /> */}
     </main>
   );
 };

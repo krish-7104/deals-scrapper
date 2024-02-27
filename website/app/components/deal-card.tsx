@@ -122,7 +122,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
                 </span>
               )}
             </div>
-            <p className="line-clamp-3 text-xs w-full md:text-sm">{title}</p>
+            <p className="line-clamp-3 w-full md:text-sm text-left">{title}</p>
             {getLogoHandler && (
               <Image
                 src={getLogoHandler}
@@ -148,7 +148,7 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
             width={300}
             height={300}
             alt=""
-            className="mx-10 w-[200px] h-[300px] md:h-[300px] md:w-[300px] object-contain"
+            className="mx-10 w-[160px] h-[240px] md:h-[300px] md:w-[300px] object-contain"
           />
           <div className="flex flex-col justify-start items-start">
             {getLogoHandler && (
@@ -174,15 +174,15 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
                   ).toFixed(0)}
               %
             </div>
-            <div className="flex items-end mt-6">
+            <div className="flex items-end mt-4 md:mt-6">
               <p className="font-medium text-black text-2xl md:text-3xl text-primary">
                 ₹{discount_price}
               </p>
-              <p className="font-medium text-black text-xl ,d:text-2xl ml-3 line-through">
+              <p className="font-medium text-black text-xl md:text-2xl ml-3 line-through">
                 ₹{original_price}
               </p>
             </div>
-            <div className="flex w-[90%] md:w-[60%] gap-x-4 mt-6">
+            <div className="flex w-[90%] md:w-[60%] gap-x-4 mt-4 md:mt-6">
               <Dialog
                 open={dialogOpen}
                 onOpenChange={() => setDialogOpen(!dialogOpen)}
