@@ -2,7 +2,7 @@ const fs = require('fs');
 const { parse } = require('json2csv');
 const csvFilePath = 'output.csv';
 
-const convertDataToCSV = async () => {
+const convertDataToCSV = async (req, res) => {
     try {
         const amazonData = JSON.parse(fs.readFileSync("./amazon.json"));
         const flipkartData = JSON.parse(fs.readFileSync("./flipkart.json"));
@@ -23,10 +23,13 @@ const convertDataToCSV = async () => {
                 console.error('Error writing CSV file:', err);
                 return;
             }
+            res.download(csvFilePath);
             console.log('CSV file saved successfully:', csvFilePath);
+
         });
     } catch (parseError) {
         console.error('Error parsing JSON:', parseError);
+        res.send("Error")
     }
 }
 

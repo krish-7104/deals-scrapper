@@ -46,15 +46,7 @@ app.use("/api/v1/show", showDealsRouter)
 app.use("/api/v1/search", searchProductRouter)
 app.use("/api/v1/userSearch", userSearchRouter)
 
-app.get('/convert', async (req, res) => {
-    try {
-        await convertDataToCSV();
-        res.download("output.csv");
-    } catch (error) {
-        console.error('Error serving CSV file:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+app.get('/convert', convertDataToCSV);
 
 
 app.use("", logRouter)
