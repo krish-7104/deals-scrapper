@@ -39,17 +39,7 @@ const Recommendations = () => {
     }
   };
 
-  return (
-    <main>
-      {user && user.userId && recommendation && !loading && (
-        <section>
-          {recommendation.map((item) => {
-            return <DealCard />;
-          })}
-        </section>
-      )}
-    </main>
-  );
+  return <main></main>;
 };
 
 export default Recommendations;

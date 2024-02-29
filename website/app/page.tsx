@@ -166,14 +166,16 @@ const Home = () => {
               <p className="font-semibold text-lg mb-1 mt-5 mr-auto">
                 Other Results
               </p>
-              {item.data.slice(0, 8).map((item: Deal) => {
-                return (
-                  <DealCard
-                    deal={item}
-                    key={item.discount_price + item.discount}
-                  />
-                );
-              })}
+              <div className="flex w-full flex-col">
+                {item.data.slice(0, 8).map((item: Deal) => {
+                  return (
+                    <DealCard
+                      deal={item}
+                      key={item.discount_price + item.discount}
+                    />
+                  );
+                })}
+              </div>
             </div>
           ))}
         </section>
@@ -187,7 +189,6 @@ const Home = () => {
             ))}
         </section>
       )}
-      {/* <Recommendations /> */}
     </main>
   );
 };
