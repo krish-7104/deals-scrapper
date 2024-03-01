@@ -1,33 +1,45 @@
+const { trusted } = require('mongoose');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-const cheerio = require('cheerio');
-
 puppeteer.use(StealthPlugin())
 
 
-const AmazonCoupon = async (url) => {
+const AmazonCoupon = async (req, res) => {
     try {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: false,
+            //args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        });
         const page = await browser.newPage();
-        await page.goto(url, { waitUntil: 'domcontentloaded' });
-        const htmlContent = await page.content();
-        const $ = cheerio.load(htmlContent);
+
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+
+        await page.setViewport({ width: 1366, height: 768 });
+
+        await page.goto("https://www.amazon.in/amazon-coupons/b?ie=UTF8&node=10465704031", { waitUntil: 'networkidle2' });
+
+        await page.reload({ waitUntil: 'networkidle2' });
+
         const coupons = await page.evaluate(() => {
+            const data = []
             document.querySelectorAll('.a-carousel-card').forEach(product => {
-                const title = product.querySelector('.a-size-medium a-color-success a-text-bold')?.innerText.trim();
-                const description = parseInt(product.querySelector('.a-price-whole')?.innerText.trim().replace(/[^\d.]/g, ''));
-                const link = 'https://www.amazon.in' + product.querySelector('.a-link-normal')?.getAttribute('href');
-                const image = product.querySelector('.s-image')?.getAttribute('src');
+                const title = product.querySelector('.a-size-medium.a-color-success.a-text-bold')?.innerText.trim();
+                const description = product.querySelector('.a-size-base.a-color-link')?.innerText.trim();
+                const link = 'https://www.amazon.in' + product.querySelector('.a-link-normal.landing-page-link')?.getAttribute('href');
+                const image = product.querySelector('.a-dynamic-image.coupon-image')?.getAttribute('src');
                 data.push({ title, description, image, link });
             });
             return data;
         });
-        res.json({ coupons })
+        res.json({ coupons });
+        //await browser.close();
+        
+
     } catch (error) {
         console.log("Amazon Coupon Scrapper Error: ", error)
-        return res.status(404).json({ error: 'Amazon Coupon Scrapper Error' });
+        res.status(404).json({ error: 'Amazon Coupon Scrapper Error' });
     }
 }
 
 
-module.exports = AmazonCoupon
+module.exports = AmazonCoupon;

@@ -8,6 +8,7 @@ const { connectToMongo } = require("./database/db-connect.js")
 dotenv.config()
 
 const userRouter = require("./routes/user.route.js");
+const couponRouter=require("./routes/coupons.router.js");
 const wishlistRouter = require('./routes/wishlist.router.js');
 const userSearchRouter = require("./routes/userSearch.router.js");
 const dealScrapperRouter = require("./routes/dealscrapper.router.js");
@@ -40,6 +41,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/coupon",couponRouter);
 app.use("/api/v1/wishlist", wishlistRouter);
 app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
