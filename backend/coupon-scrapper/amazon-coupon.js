@@ -7,7 +7,7 @@ puppeteer.use(StealthPlugin())
 const AmazonCoupon = async (req, res) => {
     try {
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             //args: ['--no-sandbox', '--disable-setuid-sandbox'],
         });
         const page = await browser.newPage();
@@ -32,8 +32,8 @@ const AmazonCoupon = async (req, res) => {
             return data;
         });
         res.json({ coupons });
-        //await browser.close();
-        
+        await browser.close();
+
 
     } catch (error) {
         console.log("Amazon Coupon Scrapper Error: ", error)
