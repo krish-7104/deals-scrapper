@@ -34,10 +34,13 @@ const Login = () => {
       localStorage.setItem("token", resp.data.token);
       checkUser(resp.data.token);
       router.replace("/");
-    } catch (error) {
+    } catch (error: any) {
       toast.dismiss();
-      console.log("Login Error", error);
-      toast.error("Something Went Wrong");
+      toast.error(
+        error?.response?.data?.message
+          ? error.response.data.message
+          : "Something Went Wrong"
+      );
     }
   };
 

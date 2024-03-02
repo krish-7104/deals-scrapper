@@ -36,11 +36,11 @@ const Register = () => {
     } catch (error: any) {
       toast.dismiss();
       console.log("Register Error", error);
-      if (error.response.status !== 500) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Something Went Wrong");
-      }
+      toast.error(
+        error?.response?.data?.message
+          ? error.response.data.message
+          : "Something Went Wrong"
+      );
     }
   };
 
