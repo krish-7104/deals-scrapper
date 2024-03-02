@@ -1,11 +1,18 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const cheerio = require('cheerio');
+const Redis = require('ioredis');
 
+const redis = new Redis()
 puppeteer.use(StealthPlugin())
 
-const AjioCoupon = async (req,res) => {
+const AjioCoupon = async (req, res) => {
     try {
+        const cachedData = await redis.get('coupons:ajio');
+        if (cachedData) {
+            const coupons = JSON.parse(cachedData);
+            return res.json({ coupons });
+        }
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto("https://www.ajio.com/offers", { waitUntil: 'domcontentloaded' });
@@ -22,6 +29,7 @@ const AjioCoupon = async (req,res) => {
             return data;
         });
         //console.log({ coupons }); 
+        await redis.set('coupons:ajio', JSON.stringify(coupons), 'EX', 3600 * 4);
         res.json({ coupons })
     } catch (error) {
         console.log("Ajio Coupon Scrapper Error: ", error)

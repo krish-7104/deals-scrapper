@@ -2,10 +2,17 @@ const { trusted } = require('mongoose');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 puppeteer.use(StealthPlugin())
+const Redis = require('ioredis');
 
+const redis = new Redis()
 
 const AmazonCoupon = async (req, res) => {
     try {
+        const cachedData = await redis.get('coupons:amazon');
+        if (cachedData) {
+            const coupons = JSON.parse(cachedData);
+            return res.json({ coupons });
+        }
         const browser = await puppeteer.launch({
             headless: true,
             //args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -31,6 +38,7 @@ const AmazonCoupon = async (req, res) => {
             });
             return data;
         });
+        await redis.set('coupons:amazon', JSON.stringify(coupons), 'EX', 3600 * 4);
         res.json({ coupons });
         await browser.close();
 
