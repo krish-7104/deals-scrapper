@@ -18,6 +18,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "../context/auth-context";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import { RiCoupon2Line, RiFireLine } from "react-icons/ri";
+import { CgTrack } from "react-icons/cg";
+import { GoHome } from "react-icons/go";
 
 const Navbar = () => {
   const [active, setActive] = useState("home");
@@ -33,6 +36,8 @@ const Navbar = () => {
       setActive("deals");
     } else if (pathname === "/track-product") {
       setActive("track-product");
+    } else if (pathname === "/coupons") {
+      setActive("coupons");
     }
   }, [pathname]);
 
@@ -95,6 +100,9 @@ const Navbar = () => {
             variant={active === "home" ? "outline" : "ghost"}
             className="text-lg md:text-sm mb-6 md:mb-0"
           >
+            <GoHome
+              className={`mr-2 text-xl ${active === "home" && "text-primary"}`}
+            />
             Home
           </Button>
 
@@ -103,6 +111,9 @@ const Navbar = () => {
             variant={active === "deals" ? "outline" : "ghost"}
             className="text-lg md:text-sm mb-6 md:mb-0"
           >
+            <RiFireLine
+              className={`mr-2 text-xl ${active === "deals" && "text-primary"}`}
+            />
             Hot Deals
           </Button>
           <Button
@@ -110,7 +121,24 @@ const Navbar = () => {
             variant={active === "track-product" ? "outline" : "ghost"}
             className="text-lg md:text-sm mb-6 md:mb-0"
           >
+            <CgTrack
+              className={`mr-2 text-xl ${
+                active === "track-product" && "text-primary"
+              }`}
+            />
             Track Product
+          </Button>
+          <Button
+            onClick={() => handleButtonClick("coupons")}
+            variant={active === "coupons" ? "outline" : "ghost"}
+            className="text-lg md:text-sm mb-6 md:mb-0"
+          >
+            <RiCoupon2Line
+              className={`mr-2 text-lg ${
+                active === "coupons" && "text-primary"
+              }`}
+            />
+            Coupons
           </Button>
           {!user && (
             <Button
