@@ -32,15 +32,17 @@ const AmazonSearchProduct = async (req, res) => {
 
             document.querySelectorAll('.puis-card-container').forEach(product => {
                 if (product) {
-                    const title = product.querySelector('.a-size-medium')?.innerText.trim();
-                    const discount_price = parseInt(product.querySelector('.a-price-whole')?.innerText.trim().replace(/[^\d.]/g, ''));
-                    const original_price = parseInt(product.querySelector('.a-price.a-text-price')?.firstChild?.innerText.trim().replace(/[^\d.]/g, ''));
-                    const link = 'https://www.amazon.in' + product.querySelector('.a-link-normal')?.getAttribute('href');
-                    const image = product.querySelector('.s-image')?.getAttribute('src');
-                    const discount = Math.round(((original_price - discount_price) / original_price) * 100);
-                    if (title && discount_price && original_price && discount && link && image) {
-                        data.push({ title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image });
-                        titles.push(title);
+                    if (!product.querySelector(".a-row.a-spacing-micro")) {
+                        const title = product.querySelector('.a-size-medium')?.innerText.trim();
+                        const discount_price = parseInt(product.querySelector('.a-price-whole')?.innerText.trim().replace(/[^\d.]/g, ''));
+                        const original_price = parseInt(product.querySelector('.a-price.a-text-price')?.firstChild?.innerText.trim().replace(/[^\d.]/g, ''));
+                        const link = 'https://www.amazon.in' + product.querySelector('.a-link-normal')?.getAttribute('href');
+                        const image = product.querySelector('.s-image')?.getAttribute('src');
+                        const discount = Math.round(((original_price - discount_price) / original_price) * 100);
+                        if (title && discount_price && original_price && discount && link && image) {
+                            data.push({ title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image });
+                            titles.push(title);
+                        }
                     }
                 }
             });

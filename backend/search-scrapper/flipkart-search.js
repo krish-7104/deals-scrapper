@@ -33,16 +33,18 @@ const FlipkartSearchProduct = async (req, res) => {
                     }
                 } else if (childrens.length === 4) {
                     childrens.forEach((child) => {
-                        const title = child.querySelector('.s1Q9rs')?.innerText.trim();
-                        const discount_price = parseInt(child.querySelector('._30jeq3')?.innerText.trim().replace(/[^\d.]/g, ''));
-                        const original_price = parseInt(child.querySelector('._3I9_wc')?.innerText.trim().replace(/[^\d.]/g, ''));
-                        const discount = parseInt(child.querySelector('._3Ay6Sb')?.innerText.trim().replace(/[^\d.]/g, ''));
-                        const link = 'https://www.flipkart.com' + child.querySelector('.s1Q9rs')?.getAttribute('href');
-                        const image = child.querySelector('._396cs4')?.getAttribute('src');
+                        if (!child.querySelector("._4HTuuX")) {
+                            const title = child.querySelector('.s1Q9rs')?.innerText.trim();
+                            const discount_price = parseInt(child.querySelector('._30jeq3')?.innerText.trim().replace(/[^\d.]/g, ''));
+                            const original_price = parseInt(child.querySelector('._3I9_wc')?.innerText.trim().replace(/[^\d.]/g, ''));
+                            const discount = parseInt(child.querySelector('._3Ay6Sb')?.innerText.trim().replace(/[^\d.]/g, ''));
+                            const link = 'https://www.flipkart.com' + child.querySelector('.s1Q9rs')?.getAttribute('href');
+                            const image = child.querySelector('._396cs4')?.getAttribute('src');
 
-                        if (title && discount_price && original_price && discount && link && image) {
-                            data.push({ title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image });
-                            titles.push(title);
+                            if (title && discount_price && original_price && discount && link && image) {
+                                data.push({ title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image });
+                                titles.push(title);
+                            }
                         }
                     })
                 }
