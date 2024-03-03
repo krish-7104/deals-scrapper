@@ -31,7 +31,7 @@ const AmazonSearchProduct = async (req, res) => {
             const titles = [];
 
             document.querySelectorAll('.puis-card-container').forEach(product => {
-                if (product && !product.querySelector('*:contains("Sponsored")')) {
+                if (product) {
                     const title = product.querySelector('.a-size-medium')?.innerText.trim();
                     const discount_price = parseInt(product.querySelector('.a-price-whole')?.innerText.trim().replace(/[^\d.]/g, ''));
                     const original_price = parseInt(product.querySelector('.a-price.a-text-price')?.firstChild?.innerText.trim().replace(/[^\d.]/g, ''));

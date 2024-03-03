@@ -19,35 +19,32 @@ const FlipkartSearchProduct = async (req, res) => {
             const titles = [];
             document.querySelectorAll('._1AtVbE.col-12-12').forEach(product => {
                 const childrens = product.querySelectorAll('._13oc-S > *');
-                if (product.querySelector("._2tfzpE")?.innerText !== "Sponsored") {
-                    if (childrens.length === 1) {
-                        const title = product.querySelector('._4rR01T')?.innerText.trim();
-                        const discount_price = parseInt(product.querySelector('._30jeq3._1_WHN1')?.innerText.trim().replace(/[^\d.]/g, ''));
-                        const original_price = parseInt(product.querySelector('._3I9_wc._27UcVY')?.innerText.trim().replace(/[^\d.]/g, ''));
-                        const discount = parseInt(product.querySelector('._3Ay6Sb')?.innerText.trim().replace(/[^\d.]/g, ''));
-                        const link = 'https://www.flipkart.com' + product.querySelector('._1fQZEK')?.getAttribute('href');
-                        const image = product.querySelector('._396cs4')?.getAttribute('src');
+                if (childrens.length === 1) {
+                    const title = product.querySelector('._4rR01T')?.innerText.trim();
+                    const discount_price = parseInt(product.querySelector('._30jeq3._1_WHN1')?.innerText.trim().replace(/[^\d.]/g, ''));
+                    const original_price = parseInt(product.querySelector('._3I9_wc._27UcVY')?.innerText.trim().replace(/[^\d.]/g, ''));
+                    const discount = parseInt(product.querySelector('._3Ay6Sb')?.innerText.trim().replace(/[^\d.]/g, ''));
+                    const link = 'https://www.flipkart.com' + product.querySelector('._1fQZEK')?.getAttribute('href');
+                    const image = product.querySelector('._396cs4')?.getAttribute('src');
+
+                    if (title && discount_price && original_price && discount && link && image) {
+                        data.push({ title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image });
+                        titles.push(title);
+                    }
+                } else if (childrens.length === 4) {
+                    childrens.forEach((child) => {
+                        const title = child.querySelector('.s1Q9rs')?.innerText.trim();
+                        const discount_price = parseInt(child.querySelector('._30jeq3')?.innerText.trim().replace(/[^\d.]/g, ''));
+                        const original_price = parseInt(child.querySelector('._3I9_wc')?.innerText.trim().replace(/[^\d.]/g, ''));
+                        const discount = parseInt(child.querySelector('._3Ay6Sb')?.innerText.trim().replace(/[^\d.]/g, ''));
+                        const link = 'https://www.flipkart.com' + child.querySelector('.s1Q9rs')?.getAttribute('href');
+                        const image = child.querySelector('._396cs4')?.getAttribute('src');
 
                         if (title && discount_price && original_price && discount && link && image) {
                             data.push({ title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image });
                             titles.push(title);
                         }
-                    } else if (childrens.length === 4) {
-                        childrens.forEach((child) => {
-                            const title = child.querySelector('.s1Q9rs')?.innerText.trim();
-                            const discount_price = parseInt(child.querySelector('._30jeq3')?.innerText.trim().replace(/[^\d.]/g, ''));
-                            const original_price = parseInt(child.querySelector('._3I9_wc')?.innerText.trim().replace(/[^\d.]/g, ''));
-                            const discount = parseInt(child.querySelector('._3Ay6Sb')?.innerText.trim().replace(/[^\d.]/g, ''));
-                            const link = 'https://www.flipkart.com' + child.querySelector('.s1Q9rs')?.getAttribute('href');
-                            const image = child.querySelector('._396cs4')?.getAttribute('src');
-
-                            if (title && discount_price && original_price && discount && link && image) {
-                                data.push({ title, discount_price: parseInt(discount_price), original_price: parseInt(original_price), discount: parseInt(discount), link, image });
-                                titles.push(title);
-                            }
-                        })
-
-                    }
+                    })
                 }
             });
             return { data, titles };

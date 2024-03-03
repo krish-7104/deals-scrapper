@@ -15,6 +15,7 @@ import { AddSearchHandler } from "@/utils/search-store";
 import { useAuth } from "./context/auth-context";
 import toast from "react-hot-toast";
 import Recommendations from "./components/Home Page/recommend";
+import { RiFireLine } from "react-icons/ri";
 
 interface DealData {
   company: string;
@@ -59,43 +60,60 @@ const Home = () => {
       let formattedData: DealData[] = [];
 
       if (isClothingProduct(searchTerm)) {
-        const [ajioResp, myntraResp] = await Promise.all([
-          axios(`${API_LINK}/search/ajio?q=${searchTerm}`),
-          axios(`${API_LINK}/search/myntra?q=${searchTerm}`),
+        const ajioPromise = axios(`${API_LINK}/search/ajio?q=${searchTerm}`);
+        const myntraPromise = axios(
+          `${API_LINK}/search/myntra?q=${searchTerm}`
+        );
+
+        const [ajioResp, myntraResp] = await Promise.allSettled([
+          ajioPromise,
+          myntraPromise,
         ]);
 
-        formattedData = [
-          {
+        ajioResp.status === "fulfilled" &&
+          formattedData.push({
             company: "Ajio",
-            best: ajioResp.data.best,
-            data: ajioResp.data.data,
-          },
-          {
+            best: ajioResp.value.data.best,
+            data: ajioResp.value.data.data,
+          });
+
+        myntraResp.status === "fulfilled" &&
+          formattedData.push({
             company: "Myntra",
-            best: myntraResp.data.best,
-            data: myntraResp.data.data,
-          },
-        ].sort((a, b) => a.best.discount - b.best.discount);
+            best: myntraResp.value.data.best,
+            data: myntraResp.value.data.data,
+          });
       } else {
-        const [amazonResp, flipkartResp] = await Promise.all([
-          axios(`${API_LINK}/search/amazon?q=${searchTerm}`),
-          axios(`${API_LINK}/search/flipkart?q=${searchTerm}`),
+        const amazonPromise = axios(
+          `${API_LINK}/search/amazon?q=${searchTerm}`
+        );
+        const flipkartPromise = axios(
+          `${API_LINK}/search/flipkart?q=${searchTerm}`
+        );
+
+        const [amazonResp, flipkartResp] = await Promise.allSettled([
+          amazonPromise,
+          flipkartPromise,
         ]);
 
-        formattedData = [
-          {
+        amazonResp.status === "fulfilled" &&
+          formattedData.push({
             company: "Amazon",
-            best: amazonResp.data.best,
-            data: amazonResp.data.data,
-          },
-          {
+            best: amazonResp.value.data.best,
+            data: amazonResp.value.data.data,
+          });
+
+        flipkartResp.status === "fulfilled" &&
+          formattedData.push({
             company: "Flipkart",
-            best: flipkartResp.data.best,
-            data: flipkartResp.data.data,
-          },
-        ].sort((a, b) => a.best.discount - b.best.discount);
+            best: flipkartResp.value.data.best,
+            data: flipkartResp.value.data.data,
+          });
       }
-      setDealsData(formattedData);
+
+      setDealsData(
+        formattedData.sort((a, b) => a.best.discount - b.best.discount)
+      );
       setShowCompareView(true);
       setIsComparing(false);
     } catch (error) {
@@ -153,20 +171,27 @@ const Home = () => {
         </form>
       </section>
       {showCompareView && dealsData && (
-        <section className="w-[90%] md:w-[80%] mx-auto md:grid md:grid-cols-2 justify-center md:gap-x-4">
-          {dealsData.map((item: DealData, index) => (
-            <div
-              className="flex justify-center items-center flex-col"
-              key={item.company + index}
-            >
-              <p className="font-semibold text-lg mb-1 mr-auto md:mt-0 mt-6">
-                Best Match Result
-              </p>
-              <CompareView key={index} data={item} />
-              <p className="font-semibold text-lg mb-1 mt-5 mr-auto">
-                Other Results
-              </p>
-              <div className="flex w-full flex-col">
+        <section className="w-[90%] md:w-[80%] mx-auto mb-10">
+          <p className="font-semibold text-xl mb-2 mr-auto md:mt-0 mt-6 flex items-center">
+            <RiFireLine className="text-primary mr-2 text-2xl" /> Best Match
+            Result
+          </p>
+          <div className="grid grid-cols-2 gap-x-4">
+            {dealsData.map((item: DealData, index) => (
+              <div
+                className="flex justify-center items-center flex-col"
+                key={item.company + index}
+              >
+                <CompareView key={index} data={item} />
+              </div>
+            ))}
+          </div>
+          <p className="font-semibold text-xl my-4 mr-auto md:mt-0 mt-6 flex items-center">
+            <RiFireLine className="text-primary mr-2 text-2xl" /> Other Results
+          </p>
+          <div className="grid grid-cols-2 gap-x-4">
+            {dealsData.map((item: DealData, index) => (
+              <div className="flex w-full flex-col" key={index}>
                 {item.data.slice(0, 8).map((item: Deal) => {
                   return (
                     <DealCard
@@ -176,11 +201,11 @@ const Home = () => {
                   );
                 })}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
       )}
-      {!showCompareView && isComparing && (
+      {/* {!showCompareView && isComparing && (
         <section className="grid grid-cols-2 justify-center w-[80%] mx-auto">
           {Array(2)
             .fill("")
@@ -188,7 +213,7 @@ const Home = () => {
               <CompareLoader key={index} />
             ))}
         </section>
-      )}
+      )} */}
     </main>
   );
 };
