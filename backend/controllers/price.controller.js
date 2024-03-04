@@ -64,22 +64,22 @@ exports.comparePricesDaily = async () => {
       if (productUrl.includes('amazon')) {
         const amazonData = await amazonPriceScrape(productUrl);
         if (amazonData.discount_price < price) {
-          await priceMail(email, productUrl, amazonData);
+          await priceMail(email, productUrl, amazonData, userData._id);
         }
       } else if (productUrl.includes('flipkart')) {
         const flipkartData = await flipkartPriceScraper(productUrl);
         if (flipkartData.discount_price < price) {
-          await priceMail(email, productUrl, flipkartData);
+          await priceMail(email, productUrl, flipkartData, userData._id);
         }
       } else if (productUrl.includes('ajio')) {
         const ajioData = await AjioPriceScrapper(productUrl);
         if (ajioData.discount_price < price) {
-          await priceMail(email, productUrl, ajioData);
+          await priceMail(email, productUrl, ajioData, userData._id);
         }
       } else if (productUrl.includes('myntra')) {
         const myntraData = await myntraPriceScrapper(productUrl);
         if (myntraData.discount_price < price) {
-          await priceMail(email, productUrl, myntraData);
+          await priceMail(email, productUrl, myntraData, userData._id);
         }
       }
     }

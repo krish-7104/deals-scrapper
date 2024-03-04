@@ -6,7 +6,8 @@ const ITEMS_PER_PAGE = 102;
 
 const getDealsHandler = async (req, res) => {
     try {
-        const { company, search, page } = req.query;
+        const { company, search, page, category } = req.query;
+        console.log( { company, search, page, category })
         let dealsData = [];
         try {
             const amazonData = JSON.parse(fs.readFileSync("./amazon.json"));
@@ -48,6 +49,17 @@ const getDealsHandler = async (req, res) => {
             dealsData = dealsData.filter(deal => deal.link.includes(company.toLowerCase()));
             return res.status(200).json({
                 data: dealsData, count: dealsData.length,
+            });
+        }
+        if (category) {
+            if (category.toLowerCase() === 'clothing') {
+                dealsData = dealsData.filter(deal => isClothingProduct(deal.title));
+            } else {
+                dealsData = dealsData.filter(deal => !isClothingProduct(deal.title));
+            }
+            return res.status(200).json({
+                data: dealsData,
+                count: dealsData.length,
             });
         }
         if (search) {
@@ -128,3 +140,74 @@ router.get("/deals", getDealsHandler);
 router.post("/deals/particular", getParticularDealsHandler);
 
 module.exports = router;
+
+
+const isClothingProduct = (product) => {
+    const clothingKeywords = [
+      "shirt",
+      "shirts",
+      "t-shirt",
+      "t-shirts",
+      "blouse",
+      "blouses",
+      "top",
+      "tops",
+      "dress",
+      "dresses",
+      "skirt",
+      "skirts",
+      "pants",
+      "trousers",
+      "jeans",
+      "shorts",
+      "jacket",
+      "jackets",
+      "coat",
+      "coats",
+      "sweater",
+      "sweaters",
+      "hoodie",
+      "hoodies",
+      "sweatshirt",
+      "sweatshirts",
+      "suit",
+      "suits",
+      "tie",
+      "ties",
+      "scarf",
+      "scarves",
+      "hat",
+      "hats",
+      "cap",
+      "caps",
+      "gloves",
+      "socks",
+      "shoes",
+      "boots",
+      "sandals",
+      "heels",
+      "flats",
+      "sneakers",
+      "trainers",
+      "flip flops",
+      "swimsuit",
+      "saare",
+      "saares",
+      "saree",
+      "sarees",
+      "kurta",
+      "kurti",
+      "bra",
+      "trouser",
+      "track pant",
+      "pant",
+      "joggers",
+      "women",
+      "men",
+      "floral"
+    ];
+    return clothingKeywords.some((keyword) =>
+      product.toLowerCase().includes(keyword)
+    );
+  };
+  
