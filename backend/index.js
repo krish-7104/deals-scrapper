@@ -24,6 +24,7 @@ const getAjioDealsScrapper = require("./deals-scrapper/ajio.js");
 const getMeeshoDealsScrapper = require("./deals-scrapper/meesho.js");
 const convertDataToCSV = require("./utils/json-to-csv.js");
 const PriceController = require("./controllers/price.controller.js")
+const productDetailsRouter = require("./routes/product-details")
 const app = express()
 connectToMongo()
 
@@ -47,6 +48,7 @@ app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
 app.use("/api/v1/search", searchProductRouter)
 app.use("/api/v1/userSearch", userSearchRouter)
+app.use("/api/v1/details", productDetailsRouter)
 
 app.get('/convert', convertDataToCSV);
 
@@ -55,7 +57,7 @@ app.use("", logRouter)
 // get all logs: http://localhost:4000/log
 
 
-cron.schedule('8 15 * * *', async () => {
+cron.schedule('34 18 * * *', async () => {
     console.log('Price Tracker Started');
     await PriceController.comparePricesDaily();
 });
