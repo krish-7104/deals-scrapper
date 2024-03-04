@@ -59,6 +59,7 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [company, setCompany] = useState("All");
+  const [category, setCategory] = useState("All");
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -94,6 +95,28 @@ const Page = () => {
       companyFetchDeals();
     }
   }, [company]);
+
+  useEffect(() => {
+    const categoryDataFetch = async () => {
+      try {
+        setLoading(true);
+        const resp = await axios.get(
+          `${API_LINK}/show/deals?category=${category}`
+        );
+        setDeals(resp.data.data);
+        setLoading(false);
+      } catch (error) {
+        toast.error("Error In Searching Deals");
+      }
+    };
+
+    if (category === "All") {
+      fetchDeals(1);
+    } else {
+      categoryDataFetch();
+    }
+  }, [category]);
+
 
   useEffect(() => {
     const searchFetchDeals = async () => {
@@ -212,7 +235,8 @@ const Page = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Select onValueChange={(text: string) => setCompany(text)}>
+       <div className="flex">
+       <Select onValueChange={(text: string) => setCompany(text)}>
           <SelectTrigger className="md:w-[200px]">
             <SelectValue placeholder="Company Filter" />
           </SelectTrigger>
@@ -229,6 +253,22 @@ const Page = () => {
             </SelectGroup>
           </SelectContent>
         </Select>
+        <div className="mr-4"></div>
+        <Select onValueChange={(text: string) => setCategory(text)}>
+          <SelectTrigger className="md:w-[200px]">
+            <SelectValue placeholder="Category Filter" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="All" defaultChecked>
+                All Deals
+              </SelectItem>
+              <SelectItem value="Electronic">Electronic</SelectItem>
+              <SelectItem value="Clothing">Clothing</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+       </div>
       </section>
       {!loading && search && deals.length === 0 && (
         <p className="text-center w-full mt-10 text-xl font-medium">

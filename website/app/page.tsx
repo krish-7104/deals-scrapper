@@ -9,12 +9,10 @@ import {
 import { API_LINK } from "../utils/base-api";
 import CompareView from "@/app/components/Home Page/compare-view";
 import isClothingProduct from "@/utils/cloth-checker";
-import CompareLoader from "@/app/components/Home Page/compare-loader";
 import DealCard from "./components/deal-card";
 import { AddSearchHandler } from "@/utils/search-store";
 import { useAuth } from "./context/auth-context";
 import toast from "react-hot-toast";
-import Recommendations from "./components/Home Page/recommend";
 import { RiFireLine } from "react-icons/ri";
 
 interface DealData {
@@ -37,6 +35,8 @@ const Home = () => {
   const [dealsData, setDealsData] = useState<DealData[]>([]);
   const [isComparing, setIsComparing] = useState(false);
   const [showCompareView, setShowCompareView] = useState(false);
+  const [recommendations, setRecommendation] = useState<Deal[]>([])
+  const [loading, setLoading] = useState(true)
   const { user } = useAuth();
   const clearSearch = () => {
     setSearchTerm("");
@@ -46,7 +46,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    GetUserSearches();
+   user?.userId && GetUserSearches();
   }, [user]);
 
   useEffect(() => {
@@ -130,24 +130,21 @@ const Home = () => {
 
   const GetUserSearches = async () => {
     try {
+      setLoading(true)
       const resp = await axios.get(
         `${API_LINK}/userSearch/getUserSearch/${user?.userId}`
       );
-
-      GetRecommendationhandler(resp.data.searches);
+        const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
+          title: resp.data.searches,
+        }); 
+        console.log(reccom.data)
+        setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
+        setLoading(false)
     } catch (error) {
-      GetRecommendationhandler([]);
+      setRecommendation([])
     }
   };
 
-  const GetRecommendationhandler = async (userSearch: string[]) => {
-    try {
-      const resp = await axios.post("http://127.0.0.1:5000/recommend", {
-        title: userSearch,
-      });
-      console.log(resp);
-    } catch (error) {}
-  };
 
   return (
     <main>
@@ -230,16 +227,17 @@ const Home = () => {
           </div>
         </section>
       )}
+     {recommendations.length > 0 && !loading && (
+  <section className="w-[90%] mx-auto my-10">
+    <p className="text-xl font-semibold text-left">Suggested Deals</p>
+    <section className="grid grid-cols-3 justify-center w-full mx-auto mt-6 gap-4">
+      {recommendations?.map((item) => {
+        return <DealCard deal={item} />;
+      })}
+    </section>
+  </section>
+)}
 
-      {/* {!showCompareView && isComparing && (
-        <section className="grid grid-cols-2 justify-center w-[80%] mx-auto">
-          {Array(2)
-            .fill("")
-            .map((_, index) => (
-              <CompareLoader key={index} />
-            ))}
-        </section>
-      )} */}
     </main>
   );
 };

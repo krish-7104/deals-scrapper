@@ -91,7 +91,7 @@ const getDealsHandler = async (req, res) => {
 };
 const getParticularDealsHandler = async (req, res) => {
     try {
-        const { title } = req.body;
+        const { url } = req.body;
         let dealsData = [];
         try {
             const amazonData = JSON.parse(fs.readFileSync("./amazon.json"));
