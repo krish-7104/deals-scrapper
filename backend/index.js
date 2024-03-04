@@ -8,7 +8,7 @@ const { connectToMongo } = require("./database/db-connect.js")
 dotenv.config()
 
 const userRouter = require("./routes/user.route.js");
-const couponRouter=require("./routes/coupons.router.js");
+const couponRouter = require("./routes/coupons.router.js");
 const wishlistRouter = require('./routes/wishlist.router.js');
 const userSearchRouter = require("./routes/userSearch.router.js");
 const dealScrapperRouter = require("./routes/dealscrapper.router.js");
@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/coupon",couponRouter);
+app.use("/api/v1/coupon", couponRouter);
 app.use("/api/v1/wishlist", wishlistRouter);
 app.use("/api/v1/scrapper", dealScrapperRouter)
 app.use("/api/v1/show", showDealsRouter)
@@ -55,44 +55,44 @@ app.use("", logRouter)
 // get all logs: http://localhost:4000/log
 
 
-cron.schedule('0 9 * * *', async () => {
+cron.schedule('8 15 * * *', async () => {
     console.log('Price Tracker Started');
     await PriceController.comparePricesDaily();
 });
 
 
-const cronHour = 9
-const cronMinute = 16
+const cronHour = 11
+const cronMinute = 46
 
 cron.schedule(`${cronMinute} ${cronHour} * * *`, () => {
     getAmazonCategoryScrapper()
 });
 
-cron.schedule(`27 ${cronHour} * * *`, () => {
+cron.schedule(`48 ${cronHour} * * *`, () => {
     getAmazonDealsScrapper()
 });
 
-cron.schedule(`29 ${cronHour} * * *`, () => {
+cron.schedule(`52 ${cronHour} * * *`, () => {
     getFlipkartCategoryScrapper()
 });
 
-cron.schedule(`30 ${cronHour} * * *`, () => {
+cron.schedule(`55 ${cronHour} * * *`, () => {
     getFlipkartDealsScrapper()
 });
 
-cron.schedule(`34 ${cronHour} * * *`, () => {
+cron.schedule(`57 ${cronHour} * * *`, () => {
     getMyntraDealsScrapper()
 });
 
-cron.schedule(`38 ${cronHour} * * *`, () => {
+cron.schedule(`2 12 * * *`, () => {
     getAjioDealsScrapper()
 });
 
-cron.schedule(`40 ${cronHour} * * *`, () => {
+cron.schedule(`5 12 * * *`, () => {
     getMeeshoDealsScrapper()
 });
 
-cron.schedule(`45 ${cronHour} * * *`, () => {
+cron.schedule(`7 12 * * *`, () => {
     convertDataToCSV()
 });
 

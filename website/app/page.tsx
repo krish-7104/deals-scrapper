@@ -46,6 +46,10 @@ const Home = () => {
   };
 
   useEffect(() => {
+    GetUserSearches();
+  }, [user]);
+
+  useEffect(() => {
     if (searchTerm === "") {
       clearSearch();
     }
@@ -122,6 +126,27 @@ const Home = () => {
       setShowCompareView(false);
       toast.error("Error In Finding Products!");
     }
+  };
+
+  const GetUserSearches = async () => {
+    try {
+      const resp = await axios.get(
+        `${API_LINK}/userSearch/getUserSearch/${user?.userId}`
+      );
+
+      GetRecommendationhandler(resp.data.searches);
+    } catch (error) {
+      GetRecommendationhandler([]);
+    }
+  };
+
+  const GetRecommendationhandler = async (userSearch: string[]) => {
+    try {
+      const resp = await axios.post("http://127.0.0.1:5000/recommend", {
+        title: userSearch,
+      });
+      console.log(resp);
+    } catch (error) {}
   };
 
   return (
@@ -205,6 +230,7 @@ const Home = () => {
           </div>
         </section>
       )}
+
       {/* {!showCompareView && isComparing && (
         <section className="grid grid-cols-2 justify-center w-[80%] mx-auto">
           {Array(2)
