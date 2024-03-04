@@ -137,8 +137,13 @@ const Home = () => {
         const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
           title: resp.data.searches,
         }); 
-        console.log(reccom.data)
-        setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
+        if(reccom.data.includes("NaN"))
+        {
+          setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
+        }else{
+          setRecommendation(reccom.data)
+
+        }
         setLoading(false)
     } catch (error) {
       setRecommendation([])
