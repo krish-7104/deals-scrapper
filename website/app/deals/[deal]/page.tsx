@@ -7,7 +7,7 @@ const LZString = require("lz-string");
 import { useAuth } from "@/app/context/auth-context";
 import Image from "next/image";
 import { TbDiscount2 } from "react-icons/tb";
-import { Star } from "lucide-react";
+import { Copy, Share, Star } from "lucide-react";
 import { AiOutlineLoading } from "react-icons/ai";
 import toast from "react-hot-toast";
 import {
@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import DealCard from "@/app/components/deal-card";
+
 interface DealData{
   details:string;
   discount:number;
@@ -63,6 +64,24 @@ const Page = () => {
       }
     } else {
       toast.error("Please Enter Desired Price");
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({ title: 'Share', text:`Go Grab The Deal: ${originalLink}` });
+    } catch (error) {
+      console.error('Error sharing content:', error);
+    }
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(originalLink);
+      console.log('Link Copied!', originalLink);
+      toast.success("Link Copied!")
+    } catch (error) {
+      console.error('Error copying text:', error);
     }
   };
 
@@ -134,9 +153,9 @@ const Page = () => {
 
   return (
     <main className="flex justify-center items-center flex-col">
-     {data && <section className="my-10 w-[80%] mx-auto flex justify-center">
-      <Image alt="" src={data.image} width={500} height={500} className="object-contain mx-4 w-1/3"/>
-      <div className="w-2/3">
+     {data && <section className="my-10 md:w-[80%] w-[90%] mx-auto flex justify-center md:flex-row flex-col items-center">
+      <Image alt="" src={data.image} width={500} height={500} className="object-contain mx-4 md:w-1/3 w-[240px] h-[240px]"/>
+      <div className="md:w-2/3">
       {getLogoHandler && (
         <Image
           src={getLogoHandler}
@@ -176,7 +195,7 @@ const Page = () => {
         </div>
         </div>
         <p className="mt-3">{data.details}</p>
-        <div className="mt-5 w-[70%] flex justify-evenly items-center gap-x-4">
+        <div className="mt-5 w-[90%] md:w-[70%] flex justify-evenly items-center gap-x-4">
           <Dialog
             open={dialogOpen}
             onOpenChange={() => setDialogOpen(!dialogOpen)}
@@ -242,11 +261,19 @@ const Page = () => {
           </Button>
         </div>
       </div>
+     <div className="ml-10">
+      <Button onClick={handleCopy}  size={"icon"} variant={"outline"}>
+      <Copy/>
+      </Button>
+      <Button onClick={handleShare} size={"icon"}  className="mt-3" variant={"outline"}>
+      <Share/>
+      </Button>
+     </div>
       </section>
       }
        {recommendations?.length > 0 && !loading && (
   <section className="w-[90%] mx-auto my-10">
-    <p className="text-xl font-semibold text-left">Suggested Deals</p>
+    <p className="text-xl font-semibold text-left">Related Deals</p>
     <section className="grid grid-cols-3 justify-center w-full mx-auto mt-6 gap-4">
       {recommendations?.map((item) => {
         return <DealCard deal={item} type=""/>;

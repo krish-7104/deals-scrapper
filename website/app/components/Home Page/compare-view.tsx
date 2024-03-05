@@ -32,7 +32,7 @@ interface DealDataProp {
   data: Deal[];
 }
 
-const CompareView = ({ data }: { data: DealDataProp }) => {
+const CompareView = ({ data, best }: { data: DealDataProp, best:string }) => {
   const { user } = useAuth();
   const [tracker, setTracker] = useState<{
     email: string | undefined;
@@ -62,8 +62,8 @@ const CompareView = ({ data }: { data: DealDataProp }) => {
   };
 
   return (
-    <section className="md:mb-6 mx-auto w-full">
-      <div className="w-full shadow-sm flex justify-center items-center flex-col rounded border p-6">
+    <section className="md:mb-6 mx-auto w-full relative">
+      <div className={`w-full shadow-sm flex justify-center items-center flex-col rounded border p-6 ${best===data.best.title && "translate-x-2 shadow-[0px_0px_20px_0px_#ef444430]"}`}>
         <div className="flex justify-between items-center w-full mb-5">
           <span className="border-primary text-primary border-2 px-2 py-[2px] rounded-2xl text-sm font-medium text-center flex justify-center items-center ">
             <TbDiscount2 className="animate-spin-slow text-lg mr-1" />

@@ -4,31 +4,12 @@ import { TbDiscount2 } from "react-icons/tb";
 import { AddSearchHandler } from "@/utils/search-store";
 import { useAuth } from "../context/auth-context";
 const LZString = require('lz-string');
-
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { AiOutlineClose } from "react-icons/ai";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { FaChevronRight  } from "react-icons/fa";
 import { API_LINK } from "@/utils/base-api";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { ViewIcon } from "lucide-react";
 
 interface DealProps {
   title: string;
@@ -48,35 +29,14 @@ const DealCard = ({ deal, type }: { deal: DealProps, type:string }) => {
     price: undefined | number;
   }>({ email: user?.email ? user?.email : "", price: undefined });
 
-  const AddPriceTracker = async () => {
-    if (tracker.price) {
-      try {
-        toast.loading("Adding Tracker...");
-        const resp = await axios.post(`${API_LINK}/user/priceToCompare`, {
-          productUrl: link,
-          ...tracker,
-        });
-        toast.dismiss();
-        toast.success(resp.data.message);
-        setDialogOpen(false);
-      } catch (error) {
-        toast.dismiss();
-        console.log("Tracker Adding Error", error);
-        toast.error("Something Went Wrong");
-      }
-    } else {
-      toast.error("Please Enter Desired Price");
-    }
-  };
-
   const getLogoHandler = useMemo(() => {
-    if (deal.link.includes("myntra")) return "/logos/myntra.png";
-    if (deal.link.includes("amazon")) return "/logos/amazon.png";
-    if (deal.link.includes("flipkart")) return "/logos/flipkart.png";
-    if (deal.link.includes("ajio")) return "/logos/ajio.png";
-    if (deal.link.includes("meesho")) return "/logos/meesho.png";
+    if (deal?.link?.includes("myntra")) return "/logos/myntra.png";
+    if (deal?.link?.includes("amazon")) return "/logos/amazon.png";
+    if (deal?.link?.includes("flipkart")) return "/logos/flipkart.png";
+    if (deal?.link?.includes("ajio")) return "/logos/ajio.png";
+    if (deal?.link?.includes("meesho")) return "/logos/meesho.png";
     return "";
-  }, [deal.link]);
+  }, [deal?.link]);
 
   const { title, image, original_price, discount_price, link, discount } = deal;
 
@@ -248,6 +208,7 @@ const DealCard = ({ deal, type }: { deal: DealProps, type:string }) => {
         )}
       </div>
       <p className="line-clamp-3 w-full md:text-sm text-left">{title}</p>
+      <div className="flex justify-between items-center w-full">
       {getLogoHandler && (
         <Image
           src={getLogoHandler}
@@ -258,6 +219,10 @@ const DealCard = ({ deal, type }: { deal: DealProps, type:string }) => {
           loading="lazy"
         />
       )}
+          <div className="text-white flex justify-center items-center text-sm p-2 bg-primary rounded-full">
+       <FaChevronRight  className="text"/>
+      </div>
+      </div>
     </div>
   </div>
   );

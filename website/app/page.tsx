@@ -37,17 +37,19 @@ const Home = () => {
   const [showCompareView, setShowCompareView] = useState(false);
   const [recommendations, setRecommendation] = useState<Deal[]>([])
   const [loading, setLoading] = useState(true)
+  const [betterChoice, setBetterChoice] = useState("")
   const { user } = useAuth();
   const clearSearch = () => {
     setSearchTerm("");
     setIsComparing(false);
     setShowCompareView(false);
     setDealsData([]);
+    setBetterChoice("")
   };
 
   useEffect(() => {
     GetUserSearches();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -120,6 +122,7 @@ const Home = () => {
       );
       setShowCompareView(true);
       setIsComparing(false);
+      GetHighlightHandler(formattedData[0].best, formattedData[1].best)
     } catch (error) {
       console.error(error);
       setIsComparing(false);
@@ -173,7 +176,18 @@ const Home = () => {
       }
     }
   };
+ const GetHighlightHandler=(product1:Deal, product2:Deal)=>{
+  const product1DiscountedPrice = product1.original_price - (product1.original_price * product1.discount / 100);
+  const product2DiscountedPrice = product2.original_price - (product2.original_price * product2.discount / 100);
 
+  if (product1DiscountedPrice < product2DiscountedPrice) {
+    setBetterChoice(product1.title)
+  } else if (product2DiscountedPrice < product1DiscountedPrice) {
+    setBetterChoice(product2.title)
+  } else {
+    setBetterChoice('Both products have the same price.')
+}
+ }
 
   return (
     <main>
@@ -221,26 +235,27 @@ const Home = () => {
           )}
         </form>
       </section>
+      {/* {betterChoice && <p className="text-center mb-6 font-medium bg-primary text-white py-4">{betterChoice}</p>} */}
       {showCompareView && dealsData && (
         <section className="w-[90%] md:w-[80%] mx-auto mb-10">
           <p className="font-semibold text-xl mb-2 mr-auto md:mt-0 mt-6 flex items-center">
             <RiFireLine className="text-primary mr-2 text-2xl" /> Best Match
             Result
           </p>
-          <div className="grid grid-cols-2 gap-x-4">
+          <div className="grid md:grid-cols-2 gap-x-3 md:gap-x-4">
             {dealsData.map((item: DealData, index) => (
               <div
                 className="flex justify-center items-center flex-col"
                 key={item.company + index}
               >
-                <CompareView key={index} data={item} />
+                <CompareView key={index} data={item} best={betterChoice} />
               </div>
             ))}
           </div>
           <p className="font-semibold text-xl my-4 mr-auto md:mt-0 mt-6 flex items-center">
             <RiFireLine className="text-primary mr-2 text-2xl" /> Other Results
           </p>
-          <div className="grid grid-cols-2 gap-x-4">
+          <div className="grid md:grid-cols-2 gap-x-4">
             {dealsData.map((item: DealData, index) => (
               <div className="flex w-full flex-col" key={index}>
                 {item.data.slice(0, 8).map((item: Deal) => {

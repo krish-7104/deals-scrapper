@@ -16,8 +16,8 @@ const myntraPriceScrapper = async (req, res) => {
         const $ = cheerio.load(htmlContent);
         product.name = $(".pdp-name").text().trim() + `(${$(".pdp-title").text().trim()})`;
         product.details = $(".pdp-product-description-content").text().trim();
-        product.reviews = $(".index-overallRating").text().trim();
-        product.ratings = $(".index-ratingsCount").text().trim();
+        product.reviews = $(".index-overallRating").text().trim().split("|")[0]
+        product.ratings = $(".index-ratingsCount").text().trim().split("|")[0]
         product.discount = parseInt($
             (".pdp-discount")
             .text().replace(/[^\d.]/g, ''))
