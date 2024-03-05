@@ -24,7 +24,8 @@ const getAjioDealsScrapper = require("./deals-scrapper/ajio.js");
 const getMeeshoDealsScrapper = require("./deals-scrapper/meesho.js");
 const convertDataToCSV = require("./utils/json-to-csv.js");
 const PriceController = require("./controllers/price.controller.js")
-const productDetailsRouter = require("./routes/product-details")
+const productDetailsRouter = require("./routes/product-details");
+const  axios  = require("axios");
 const app = express()
 connectToMongo()
 
@@ -51,6 +52,28 @@ app.use("/api/v1/userSearch", userSearchRouter)
 app.use("/api/v1/details", productDetailsRouter)
 
 app.get('/convert', convertDataToCSV);
+
+app.get('/autocomplete', async (req, res) => {
+    const { q } = req.query;
+    try {
+      const response = await axios.get(`https://serpapi.com/search`, {
+        params: {
+          api_key: '915d6211d0947704d35555080bd897a861fd5ee9d8a67a76e3178d88ae2b6f1b',
+          engine: 'google_autocomplete',
+          q,
+          gl: 'in',
+          hl: 'en',
+          client: 'chrome',
+          output: 'json',
+          source: 'nodejs,serpapi@2.0.0',
+        },
+      });
+      res.json(response.data);
+    } catch (error) {
+      console.error('Error fetching autocomplete suggestions:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 
 app.use("", logRouter)

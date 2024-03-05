@@ -14,6 +14,7 @@ import { AddSearchHandler } from "@/utils/search-store";
 import { useAuth } from "./context/auth-context";
 import toast from "react-hot-toast";
 import { RiFireLine } from "react-icons/ri";
+const { getJson } = require("serpapi");
 
 interface DealData {
   company: string;
@@ -38,7 +39,10 @@ const Home = () => {
   const [recommendations, setRecommendation] = useState<Deal[]>([])
   const [loading, setLoading] = useState(true)
   const [betterChoice, setBetterChoice] = useState("")
+  const [autoSuggestion, setAutoSuggestion] =useState()
   const { user } = useAuth();
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
   const clearSearch = () => {
     setSearchTerm("");
     setIsComparing(false);
@@ -46,6 +50,22 @@ const Home = () => {
     setDealsData([]);
     setBetterChoice("")
   };
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+
+    return () => {
+      clearTimeout(delayDebounceFn);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      GetAutoSuggestion(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm]);
 
   useEffect(() => {
     GetUserSearches();
@@ -189,6 +209,25 @@ const Home = () => {
 }
  }
 
+ const selectedSearchHandler = (text:string)=>{
+  setSearchTerm(text)
+ }
+
+ const GetAutoSuggestion = async(search:string)=>{
+ try {
+  const resp = await axios.get(`http://localhost:4000/autocomplete?q=${search}`)
+  setAutoSuggestion(resp.data.suggestions)
+ } catch (error) {
+  
+ }
+
+ }
+
+ const handleKeyDown = async (e: any) => {
+  if (e.key === " ") {
+    await GetAutoSuggestion(searchTerm);
+  }
+};
   return (
     <main>
       <section className="mt-20 mb-14 w-full flex justify-center flex-col items-center">
@@ -196,16 +235,25 @@ const Home = () => {
           Search for a product and we&apos;ll find the best deals for you
         </p>
         <form
-          className="md:w-[40%] w-[90%] shadow-md border flex bg-white rounded-md"
+          className="md:w-[40%] w-[90%] shadow-md border flex bg-white rounded-md relative"
           onSubmit={searchProduct}
         >
+             {<ul className="absolute w-full mt-14">
+              {autoSuggestion && autoSuggestion?.splice(0,5).map((item)=>{
+                return <li className="bg-white w-full shadow p-2 cursor-pointer hover:bg-slate-50" onClick={()=>selectedSearchHandler(item.value)}>{item.value}</li>
+              })}
+             
+              
+          </ul>}
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {setSearchTerm(e.target.value)}}
             className="w-full relative py-3 px-5 outline-none"
             placeholder="Enter Product Name..."
+            onKeyDown={handleKeyDown}
           />
+    
           {!isComparing && !showCompareView && (
             <button
               type="button"
@@ -272,7 +320,7 @@ const Home = () => {
           </div>
         </section>
       )}
-     {recommendations.length > 0 && !loading && (
+     {/* {recommendations.length > 0 && !loading && (
   <section className="w-[90%] mx-auto my-10">
     <p className="text-xl font-semibold text-left">Suggested Deals</p>
     <section className="grid grid-cols-3 justify-center w-full mx-auto mt-6 gap-4">
@@ -281,7 +329,7 @@ const Home = () => {
       })}
     </section>
   </section>
-)}
+)} */}
 
     </main>
   );
