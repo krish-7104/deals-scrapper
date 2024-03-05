@@ -46,8 +46,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-   user?.userId && GetUserSearches();
-  }, [user]);
+    GetUserSearches();
+  }, []);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -131,22 +131,46 @@ const Home = () => {
   const GetUserSearches = async () => {
     try {
       setLoading(true)
-      const resp = await axios.get(
-        `${API_LINK}/userSearch/getUserSearch/${user?.userId}`
-      );
+      if(user?.userId)
+      {
+        const resp = await axios.get(
+          `${API_LINK}/userSearch/getUserSearch/${user?.userId}`
+        );
+          const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
+            title: resp.data.searches,
+          }); 
+          if(reccom.data.includes("NaN"))
+          {
+            setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
+          }else{
+            setRecommendation(reccom.data)
+  
+          }
+          setLoading(false)
+      }else{
         const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
-          title: resp.data.searches,
+          title: [],
         }); 
         if(reccom.data.includes("NaN"))
         {
           setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
         }else{
           setRecommendation(reccom.data)
-
+  
         }
-        setLoading(false)
+      }
+    
     } catch (error) {
-      setRecommendation([])
+      const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
+        title: [],
+      }); 
+      if(reccom.data.includes("NaN"))
+      {
+        setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
+      }else{
+        setRecommendation(reccom.data)
+
+      }
     }
   };
 
@@ -222,6 +246,7 @@ const Home = () => {
                 {item.data.slice(0, 8).map((item: Deal) => {
                   return (
                     <DealCard
+                      type=""
                       deal={item}
                       key={item.discount_price + item.discount}
                     />
@@ -237,7 +262,7 @@ const Home = () => {
     <p className="text-xl font-semibold text-left">Suggested Deals</p>
     <section className="grid grid-cols-3 justify-center w-full mx-auto mt-6 gap-4">
       {recommendations?.map((item) => {
-        return <DealCard deal={item} />;
+        return <DealCard deal={item} type="deal"/>;
       })}
     </section>
   </section>

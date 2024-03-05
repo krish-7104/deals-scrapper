@@ -39,7 +39,7 @@ interface DealProps {
   discount: number;
 }
 
-const DealCard = ({ deal }: { deal: DealProps }) => {
+const DealCard = ({ deal, type }: { deal: DealProps, type:string }) => {
   const { user } = useAuth();
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -83,14 +83,17 @@ const DealCard = ({ deal }: { deal: DealProps }) => {
   const ClickHandler = () => {
     user && AddSearchHandler(user?.userId ? user?.userId : "", title);
     // window.open(link);
-    const compress = LZString.compressToEncodedURIComponent(link)
+    if(type === "deal")
+    {
+      const compress = LZString.compressToEncodedURIComponent(link)
     router.push(`/deals/${compress}`)
+    }
   };
 
   return (
     // <Drawer>
     //   <DrawerTrigger>
-    
+   
     //   </DrawerTrigger>
     //   <DrawerContent>
     //     <DrawerClose className="flex justify-end items-center mr-6">

@@ -9,7 +9,18 @@ import Image from "next/image";
 import { TbDiscount2 } from "react-icons/tb";
 import { Star } from "lucide-react";
 import { AiOutlineLoading } from "react-icons/ai";
-
+import toast from "react-hot-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import DealCard from "@/app/components/deal-card";
 interface DealData{
   details:string;
   discount:number;
@@ -27,6 +38,34 @@ const Page = () => {
   const [data, setData] =useState<DealData>()
   const originalLink = LZString.decompressFromEncodedURIComponent(id.deal);
   const [loading, setLoading] = useState(false)
+  const [recommendations, setRecommendation] = useState()
+  const [tracker, setTracker] = useState<{
+    email: string | undefined;
+    price: undefined | number;
+  }>({ email: user?.email ? user?.email : "", price: undefined });
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const AddPriceTracker = async () => {
+    if (tracker.price) {
+      try {
+        toast.loading("Adding Tracker...");
+        const resp = await axios.post(`${API_LINK}/user/priceToCompare`, {
+          productUrl: originalLink,
+          ...tracker,
+        });
+        toast.dismiss();
+        toast.success(resp.data.message);
+        setDialogOpen(false);
+      } catch (error) {
+        toast.dismiss();
+        console.log("Tracker Adding Error", error);
+        toast.error("Something Went Wrong");
+      }
+    } else {
+      toast.error("Please Enter Desired Price");
+    }
+  };
+
   const GetDataHandler = async () => 
   {
     setLoading(true)
@@ -50,6 +89,7 @@ const Page = () => {
         });
       }
       setData(resp?.data)
+      GetRecommendedProducts(resp?.data.name)
       setLoading(false)
     } catch (error) {
       setLoading(false)
@@ -70,6 +110,27 @@ const Page = () => {
     return "";
   }, [originalLink]);
   
+
+  const GetRecommendedProducts = async (title:string) => {
+    let arr = []
+    arr.push(title)
+    try {
+      setLoading(true)
+        const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
+          title: arr,
+        }); 
+        if(reccom.data.includes("NaN"))
+        {
+          setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
+        }else{
+          setRecommendation(reccom.data)
+
+        }
+        setLoading(false)
+    } catch (error) {
+      setRecommendation([])
+    }
+  };
 
   return (
     <main className="flex justify-center items-center flex-col">
@@ -115,15 +176,86 @@ const Page = () => {
         </div>
         </div>
         <p className="mt-3">{data.details}</p>
+        <div className="mt-5 w-[70%] flex justify-evenly items-center gap-x-4">
+          <Dialog
+            open={dialogOpen}
+            onOpenChange={() => setDialogOpen(!dialogOpen)}
+          >
+            <DialogTrigger
+              className="w-1/2"
+              onClick={() => setDialogOpen(true)}
+            >
+              <Button size={"sm"} className="w-full">
+                Add Price Tracker
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="text-xl">
+                  Adding Price Tracker
+                </DialogTitle>
+                <DialogDescription>
+                  You will get email notification once price drops below your
+                  desired price.
+                </DialogDescription>
+                <DialogDescription className="text-black font-medium">
+                  Current Price: ₹{data.discount_price}
+                </DialogDescription>
+              </DialogHeader>
+              <div>
+                <Input
+                  className="mb-3"
+                  placeholder="Enter Email"
+                  value={tracker.email}
+                  type="email"
+                  onChange={(e) =>
+                    setTracker({ ...tracker, email: e.target.value })
+                  }
+                />
+                <Input
+                  placeholder="Enter Desired Price"
+                  value={tracker.price}
+                  type="number"
+                  autoFocus={tracker?.email ? true : false}
+                  onChange={(e) =>
+                    setTracker({
+                      ...tracker,
+                      price: parseInt(e.target.value),
+                    })
+                  }
+                />
+                <Button
+                  className="mt-5 ml-auto block"
+                  onClick={AddPriceTracker}
+                >
+                  Add Tracker
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Button
+            size={"sm"}
+            className="w-1/2 bg-black hover:bg-black/90"
+            onClick={() => window.open(originalLink)}
+          >
+            Buy Now
+          </Button>
+        </div>
       </div>
       </section>
       }
+       {recommendations?.length > 0 && !loading && (
+  <section className="w-[90%] mx-auto my-10">
+    <p className="text-xl font-semibold text-left">Suggested Deals</p>
+    <section className="grid grid-cols-3 justify-center w-full mx-auto mt-6 gap-4">
+      {recommendations?.map((item) => {
+        return <DealCard deal={item} type=""/>;
+      })}
+    </section>
+  </section>
+)}
       {loading && <div className="flex justify-center items-center h-[60vh] w-full flex-col">
       <AiOutlineLoading className="animate-spin text-primary text-xl"/>
-    </div>}
-      {!data && !loading && <div className="flex justify-center items-center h-[60vh] w-full flex-col">
-      <p>Aap Galat Rah Pur Chal Rahe Ho</p>
-      
     </div>}
     </main>
   );

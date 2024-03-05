@@ -34,9 +34,8 @@ const amazonPriceScrape = async (req, res) => {
         product.reviews = parseFloat($(item).find(".reviewCountTextLinkedHistogram.noUnderline > span")
             .first()
             .text().split("    ")[1].replace(/[^\d.]/g, ''))
-        product.details = $(item).find(".a-section.a-spacing-medium.a-spacing-top-small").text().trim()
+        product.details = $(item).find(".a-unordered-list.a-vertical.a-spacing-small").text().trim()
         res.json(product)
-
     } catch (error) {
         console.log("Amazon Price Scrapper Error: ", error)
         return null

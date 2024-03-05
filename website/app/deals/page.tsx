@@ -280,6 +280,7 @@ const Page = () => {
           deals?.map((deal) => {
             return (
               <DealCard
+              type="deal"
                 key={deal?.discount + deal?.discount_price}
                 deal={deal}
               />
