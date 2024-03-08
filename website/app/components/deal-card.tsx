@@ -171,7 +171,7 @@ const DealCard = ({ deal, type }: { deal: DealProps, type:string }) => {
     //   </DrawerContent>
     // </Drawer>
     <div
-    className="bg-white border p-4 rounded-md flex cursor-pointer md:h-[160px] group w-full overflow-hidden"
+    className="bg-white border p-4 rounded-md flex cursor-pointer md:h-[160px] group w-full overflow-hidden relative"
     onClick={ClickHandler}
   >
     <Image
@@ -219,9 +219,9 @@ const DealCard = ({ deal, type }: { deal: DealProps, type:string }) => {
           loading="lazy"
         />
       )}
-          <div className="text-white flex justify-center items-center text-sm p-2 bg-primary rounded-full">
+          <span className="text-primary px-2 py-2 rounded-2xl text-xs md:text-sm font-medium ml-auto text-center flex justify-center items-center absolute bottom-4 right-4 bg-secondary">
        <FaChevronRight  className="text"/>
-      </div>
+      </span>
       </div>
     </div>
   </div>

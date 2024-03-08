@@ -170,30 +170,10 @@ const Home = () => {
   
           }
           setLoading(false)
-      }else{
-        const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
-          title: [],
-        }); 
-        if(reccom.data.includes("NaN"))
-        {
-          setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
-        }else{
-          setRecommendation(reccom.data)
-  
         }
-      }
     
     } catch (error) {
-      const reccom = await axios.post("http://127.0.0.1:5000/recommend", {
-        title: [],
-      }); 
-      if(reccom.data.includes("NaN"))
-      {
-        setRecommendation(JSON.parse(reccom.data.replaceAll("NaN",null)))
-      }else{
-        setRecommendation(reccom.data)
-
-      }
+     
     }
   };
  const GetHighlightHandler=(product1:Deal, product2:Deal)=>{
@@ -238,7 +218,7 @@ const Home = () => {
           className="md:w-[40%] w-[90%] shadow-md border flex bg-white rounded-md relative"
           onSubmit={searchProduct}
         >
-             {<ul className="absolute w-full mt-14">
+             {<ul className="absolute w-full mt-14 z-30">
               {autoSuggestion && autoSuggestion?.splice(0,5).map((item)=>{
                 return <li className="bg-white w-full shadow p-2 cursor-pointer hover:bg-slate-50" onClick={()=>selectedSearchHandler(item.value)}>{item.value}</li>
               })}
@@ -283,7 +263,7 @@ const Home = () => {
           )}
         </form>
       </section>
-      {/* {betterChoice && <p className="text-center mb-6 font-medium bg-primary text-white py-4">{betterChoice}</p>} */}
+      {betterChoice && <p className="text-center mb-6 font-medium bg-primary text-white py-4">Best Match: {betterChoice}</p>}
       {showCompareView && dealsData && (
         <section className="w-[90%] md:w-[80%] mx-auto mb-10">
           <p className="font-semibold text-xl mb-2 mr-auto md:mt-0 mt-6 flex items-center">
@@ -320,7 +300,7 @@ const Home = () => {
           </div>
         </section>
       )}
-     {/* {recommendations.length > 0 && !loading && (
+     {recommendations.length > 0 && !loading && (
   <section className="w-[90%] mx-auto my-10">
     <p className="text-xl font-semibold text-left">Suggested Deals</p>
     <section className="grid grid-cols-3 justify-center w-full mx-auto mt-6 gap-4">
@@ -329,7 +309,7 @@ const Home = () => {
       })}
     </section>
   </section>
-)} */}
+)}
 
     </main>
   );
